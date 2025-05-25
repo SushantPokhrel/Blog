@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { HiMiniBars3 } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io"; // Close icon
+import { Link } from "react-router-dom";
 import Button from "./Button";
 
 const Nav: React.FC = () => {
@@ -18,18 +19,7 @@ const Nav: React.FC = () => {
     "UI/UX Design",
   ];
 
-  <ul className="space-y-4">
-    {topics.map((topic, index) => (
-      <li
-        key={index}
-        className={`hover:text-blue-${
-          index === 0 ? "400" : "300"
-        } cursor-pointer`}
-      >
-        {topic}
-      </li>
-    ))}
-  </ul>;
+  
 
   const [isOpen, setIsOpen] = useState(false);
   const handleToggleMenu = () => {
@@ -38,10 +28,9 @@ const Nav: React.FC = () => {
   return (
     <nav className=" flex justify-between p-4 items-center bg-white ">
       <div className="flex items-center cursor-pointer logo-name text-lg ">
-        
-        <div>
+        <Link to="/">
           <span className="text-blue-400">Vibe</span>Write
-        </div>
+        </Link>
       </div>
       <div className="flex gap-3">
         <div className="p-2 active:bg-blue-200">
@@ -80,11 +69,11 @@ const Nav: React.FC = () => {
           ))}
         </ul>
         <div className="buttons">
-          <Button
+         <Link to="/user/auth"> <Button
             children="Login"
-            onClick={() => console.log("hi")}
+            onClick={() => setIsOpen(false)}
             className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white active:bg-blue-600"
-          />
+          /></Link>
         </div>
       </div>
     </nav>
