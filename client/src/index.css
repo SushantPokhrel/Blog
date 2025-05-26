@@ -2,9 +2,23 @@
 @import "tailwindcss";
 @layer base {
   body {
-    font-family: 'Poppins', sans-serif;
-  }}
+    font-family: "Poppins", sans-serif;
+  }
+  /* ckeditor css  */
+  .ck-content h1 {
+    @apply text-3xl font-semibold;
+  }
+  .ck-content h2 {
+    @apply text-2xl font-semibold;
+  }
+  .ck-content h3 {
+    @apply text-xl font-semibold;
+  }
+  .ck-editor-container {
+    @apply max-w-4xl mx-auto m-4 
+  }
+}
 
-  .wrapper {
-  @apply  px-4 py-8 max-w-4xl mx-auto ;
+.wrapper {
+  @apply px-4 py-8 max-w-4xl mx-auto;
 }
