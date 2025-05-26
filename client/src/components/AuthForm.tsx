@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const oauthRedirectUrl = import.meta.env.VITE_OAUTH_REDIRECT_URL;
 import Button from "./Button";
 type FormDataTypes = {
   username?: string;
@@ -26,12 +27,16 @@ const AuthForm: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ code: credentialResponse.code }),
-      });
+      })
+        .then((res) => res.json())
+        .then((data) => console.log(data))
+        .catch((e) => console.log(e));
     },
     onError: (error) => {
       console.error("Google login error:", error);
     },
     flow: "auth-code", //  'auth-code' for server-side exchange logic
+    redirect_uri: oauthRedirectUrl,
   });
   // submit the form data
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
