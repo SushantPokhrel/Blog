@@ -6,6 +6,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const db = require("./DatabaseConnection");
 const userRoutes = require("./routes/UserRoute")
+const postRoutes = require("./routes/PostRoute")
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(
@@ -16,13 +17,17 @@ app.use(
 );
 db();
 
-app.use(express.json());
+app.use(express.json({
+  limit:"12mb"
+}));
 app.use(express.urlencoded({
-  extended:true
+  extended:true,
+  limit:"10mb"
 }));
 app.use(cookieParser());
 // routes
 app.use("/api/auth",userRoutes)
+app.use("/api/posts",postRoutes)
 app.get("/", (req, res) => {
   res.send("<h1>hi from server</h1>");
 });

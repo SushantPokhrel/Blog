@@ -1,142 +1,175 @@
-import React, { useState, useLayoutEffect } from "react";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import Prism from "prismjs";
-
-import "prismjs/themes/prism-tomorrow.css"; // You can use 'prism-tomorrow.css' for dark theme
-import {
-  ClassicEditor,
-  PictureEditing,
-  Base64UploadAdapter,
-  Code,
-} from "ckeditor5";
-
-import {
-  Essentials,
-  Paragraph,
-  Bold,
-  Italic,
-  Heading,
-  Link,
-  List,
-  BlockQuote,
-  Image,
-  ImageToolbar,
-  ImageUpload,
-  Table,
-  TableToolbar,
-  MediaEmbed,
-  Undo,
-  RemoveFormat,
-  SourceEditing,
-  CodeBlock,
-} from "ckeditor5";
-
-import "ckeditor5/ckeditor5.css";
-
+import React, { useState } from "react";
+import { IoMdClose } from "react-icons/io"; // Close icon
+import Button from "../components/Button";
+import Editor from "../components/Editor";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const MAX_FILE_SIZE_MB = 1; // 1MB limit
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const Post: React.FC = () => {
   const [content, setContent] = useState("");
-  const handleContent = (e: any, editor: any) => {
+  const [title, setTitle] = useState("");
+  const [base64Img, setBase64Img] = useState("");
+  const [fileName, setFileName] = useState("");
+  const handleContent = (event: any, editor: any) => {
     setContent(editor.getData());
   };
-  useLayoutEffect(() => {
-    Prism.highlightAll();
-  }, [content]);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      alert(
+        `File is too large. Please upload an image smaller than ${MAX_FILE_SIZE_MB}MB.`
+      );
+      e.target.value = ""; // Clear the input
+      return;
+    }
+
+    setFileName(file.name);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setBase64Img(reader.result as string);
+    };
+    reader.readAsDataURL(file); // for base64 string
+  };
+  const handleSubmit = async () => {
+    const postData = {
+      title,
+      content,
+      image: base64Img, // This is the base64 image
+    };
+
+    try {
+      const res = await fetch(`${backendUrl}/api/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(postData),
+      });
+
+      if (res.ok) {
+        alert("Post submitted successfully!");
+        console.log(res);
+      } else {
+        alert("Failed to submit post.");
+      }
+    } catch (err) {
+      console.error("Error submitting post:", err);
+    }
+  };
+
   return (
-    <div className="ck-editor-container">
-      <h1>Create Post</h1>
-      <CKEditor
-        editor={ClassicEditor}
-        onChange={handleContent}
-        config={{
-          licenseKey: "GPL",
-          plugins: [
-            Essentials,
-            Paragraph,
-            Bold,
-            Italic,
-            Heading,
-            Link,
-            List,
-            BlockQuote,
-            Image,
-            ImageToolbar,
-            ImageUpload,
-            Base64UploadAdapter,
-            Table,
-            TableToolbar,
-            MediaEmbed,
-            Undo,
-            RemoveFormat,
-            SourceEditing,
-            PictureEditing,
-            CodeBlock,
-          ],
-          toolbar: [
-            "undo",
-            "redo",
-            "|",
-            "bold",
-            "italic",
-            "link",
-            "bulletedList",
-            "numberedList",
-            "|",
-            "heading", // ✅ this gives you a working heading dropdown
+    <div className="wrapper ">
+      <h1 className="text-2xl font-extrabold text-gray-800 mb-8 text-center">
+        Create a New Post
+      </h1>
 
-            "|",
-            "blockQuote",
-            "insertTable",
-            "mediaEmbed",
-            "imageUpload",
-            "|",
+      <div className="space-y-6 flex flex-col gap-2">
+        {/* Title */}
+        <div>
+          <label
+            htmlFor="title"
+            className="block text-base font-medium text-gray-700 mb-1"
+          >
+            Title
+          </label>
+          <input
+            type="text"
+            name="title"
+            className="w-full border border-gray-300 p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter blog title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
 
-            "codeBlock",
-            "|",
-            "removeFormat",
-            "sourceEditing",
-          ],
-          heading: {
-            options: [
-              {
-                model: "paragraph",
-                title: "Paragraph",
-                class: "ck-heading_paragraph",
-              },
-              {
-                model: "heading1",
-                view: "h1",
-                title: "Heading 1",
-                class: "ck-heading_heading1",
-              },
-              {
-                model: "heading2",
-                view: "h2",
-                title: "Heading 2",
-                class: "ck-heading_heading2",
-              },
-              {
-                model: "heading3",
-                view: "h3",
-                title: "Heading 3",
-                class: "ck-heading_heading3",
-              },
-            ],
-          },
-          table: {
-            contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
-          },
-          mediaEmbed: {
-            previewsInData: true,
-          },
+        {/* File Upload */}
+        <div>
+          <label className="block text-base font-medium text-gray-700 mb-1">
+            Upload Preview Image
+          </label>
 
-          placeholder: "Start writing your post here...",
-        }}
-        data="<p>Hello from CKEditor 5 in React!</p>"
-      />
-      <div
-        className="showContent"
-        dangerouslySetInnerHTML={{ __html: content }}
-      ></div>
+          <div className="flex items-center space-x-4">
+            <label
+              htmlFor="file-upload"
+              className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition"
+            >
+              <svg
+                className="h-5 w-5 mr-2 text-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M4 12l4-4m0 0l4 4m-4-4v12"
+                />
+              </svg>
+              Choose Image
+            </label>
+
+            <input
+              id="file-upload"
+              name="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+              required
+            />
+
+            {base64Img && (
+              <div className="flex-1 flex justify-between items-center ">
+                <span className="text-sm text-gray-500 truncate max-w-[150px]">
+                  {fileName}
+                </span>
+                <span
+                  onClick={() => setBase64Img("")}
+                  className="cursor-pointer"
+                >
+                  <IoMdClose className="text-red-500 text-2xl font-bold" />
+                </span>
+              </div>
+            )}
+          </div>
+
+          {base64Img && (
+            <img
+              src={base64Img}
+              alt="Preview"
+              className="mt-4 w-full h-auto rounded-xl border shadow-md"
+            />
+          )}
+        </div>
+
+        {/* Content Editor */}
+        <div>
+          <label className="block text-base font-medium text-gray-700 mb-2">
+            Content
+          </label>
+          <div className="bg-white border border-gray-300 rounded-lg p-2">
+            <Editor handleContent={handleContent} />
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <div className="text-center">
+          <Button
+            onClick={handleSubmit}
+            className="bg-blue-600 hover:bg-blue-700 active:bg-blue-500 text-white font-semibold text-sm px-5 py-2.5 rounded-md"
+          >
+            Submit Post
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

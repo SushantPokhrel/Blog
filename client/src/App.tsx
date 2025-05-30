@@ -5,6 +5,8 @@ import Post from "./pages/Post";
 import AuthForm from "./components/AuthForm";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./components/NotFound";
+
+
 function App() {
   return (
     <>
