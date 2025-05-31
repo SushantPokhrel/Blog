@@ -3,25 +3,36 @@
 @layer base {
   body {
     font-family: "Poppins", sans-serif;
+    overflow-x: hidden;
   }
   /* ckeditor css  */
-  .ck-content h1,.post-display h1 {
-    @apply text-3xl font-semibold;
+  .ck-content h1,
+  .post-display h1 {
+    @apply text-3xl font-semibold text-gray-800;
   }
-  .ck-content h2,.post-display h2 {
-    @apply text-2xl font-semibold;
+  .ck-content h2,
+  .post-display h2 {
+    @apply text-2xl font-semibold text-gray-800;
   }
-  .ck-content h3 ,.post-display h3 {
-    @apply text-xl font-semibold;
+  .ck-content h3,
+  .post-display h3 {
+    @apply text-xl font-semibold text-gray-800;
   }
   .ck-editor-container {
-    @apply max-w-4xl mx-auto m-4 
+    @apply max-w-4xl mx-auto m-4;
   }
-  .post-display *{
-@apply mb-3
+  .post-display * {
+    @apply m-2.5;
   }
-  
-  
+  .post-display img {
+    @apply block  mx-auto h-auto my-4;
+  }
+  .post-display a{
+    @apply text-sm text-blue-500 underline
+  }
+  .post-display p{
+    @apply text-base text-gray-800
+  }
 }
 
 .wrapper {

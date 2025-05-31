@@ -2,13 +2,13 @@ import React from "react";
 
 type ButtonProps = {
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
   className?: string;
 };
 
-const baseStyle = "font-semibold rounded transition-all";
+const baseStyle = "font-semibold rounded cursor-pointer transition-all";
 const Button: React.FC<ButtonProps> = ({
   children,
   onClick,

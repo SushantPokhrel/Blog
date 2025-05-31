@@ -26,7 +26,7 @@ const Nav: React.FC = () => {
     setIsOpen((prev) => !prev);
   };
   return (
-    <nav className=" flex justify-between p-4 items-center bg-white ">
+    <nav className=" flex justify-between p-3 items-center shadow-sm shadow-gray-100 bg-white ">
       <div className="flex items-center cursor-pointer logo-name text-lg ">
         <Link to="/">
           <span className="text-blue-400">Vibe</span>Write

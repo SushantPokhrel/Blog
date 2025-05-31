@@ -35,7 +35,12 @@ const postSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  tags: [String],
+  tags: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   category: {
     type: String,
     default: "General",

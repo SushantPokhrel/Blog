@@ -5,7 +5,7 @@ const router = express.Router();
 
 // POST /api/posts - Create a new post
 router.post("/", async (req, res) => {
-  const { content, title, image } = req.body;
+  const { content, title, image,category,tags } = req.body;
 
   const cleanHtml = sanitizeHtml(content, {
     allowedTags: [
@@ -50,6 +50,8 @@ router.post("/", async (req, res) => {
       content: cleanHtml,
       banner: image,
       author: "68342d5e0e4bb033554ede13",
+      tags,
+      category
     });
 
     await newPost.save();
