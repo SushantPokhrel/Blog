@@ -117,7 +117,7 @@ const googleController = async (req, res) => {
     console.log(ticket);
     const payload = ticket.getPayload();
     console.log(payload);
-    const { email, name, picture, sub: googleId } = payload;//property renaming
+    const { email, name, picture, sub: googleId } = payload; //property renaming
 
     // Optional: create/find user in DB here
     let existingUser = await USER.findOne({ email });
@@ -152,6 +152,7 @@ const googleController = async (req, res) => {
         secure: false, //dev=false
         sameSite: "lax", // development
         maxAge: 3600000, //1hr in ms
+
       });
       return res.status(200).json({
         message: "Login successful",

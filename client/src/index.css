@@ -21,9 +21,7 @@
   .ck-editor-container {
     @apply max-w-4xl mx-auto m-4;
   }
-  .post-display * {
-    @apply m-2.5;
-  }
+  
   .post-display img {
     @apply block  mx-auto h-auto my-4;
   }

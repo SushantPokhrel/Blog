@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useUserContext } from "../contexts/UserContext";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const oauthRedirectUrl = import.meta.env.VITE_OAUTH_REDIRECT_URL;
 import Button from "./Button";
@@ -16,24 +18,36 @@ const AuthForm: React.FC = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
+  const { isAuthenticated, setIsAuthenticated, setUser, fetchPosts } =
+    useUserContext();
   // google login function
   const googleLogin = useGoogleLogin({
-    onSuccess: (credentialResponse) => {
+    onSuccess: async (credentialResponse) => {
       console.log("Google login success:", credentialResponse);
-      fetch(`${backendUrl}/api/auth/google`, {
+      const response = await fetch(`${backendUrl}/api/auth/google`, {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ code: credentialResponse.code }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log(data))
-        .catch((e) => console.log(e));
+      });
+      const { username, email, picture, role } = await response.json();
+      if (response.status === 200 || response.status === 201) {
+        setUser({
+          username,
+          email,
+          profilePhoto: picture,
+          role,
+        });
+        setIsAuthenticated(true);
+      }
+      navigate("/dashboard");
     },
     onError: (error) => {
       console.error("Google login error:", error);
+      alert("Google Login failed, Try again");
     },
     flow: "auth-code", //  'auth-code' for server-side exchange logic
     redirect_uri: oauthRedirectUrl,
@@ -72,12 +86,14 @@ const AuthForm: React.FC = () => {
   const toggleAuthMode = () => {
     setLogin((prev) => !prev);
   };
-
+  useEffect(() => {
+    fetchPosts();
+  }, [isAuthenticated]);
   return (
     <div className="form-container wrapper">
       <form
         onSubmit={handleSubmit}
-        className="w-11/12 max-w-2xl flex flex-col gap-4 rounded-lg mx-auto shadow-lg py-6 px-5"
+        className="w-11/12 max-w-xl flex flex-col gap-4 rounded-lg mx-auto shadow-lg py-6 px-5"
       >
         <h1 className="text-xl font-semibold">{login ? "Login" : "Sign Up"}</h1>
 

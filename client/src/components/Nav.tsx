@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { HiMiniBars3 } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io"; // Close icon
+import { FaPenClip } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import Button from "./Button";
+import { useUserContext } from "../contexts/UserContext";
 
 const Nav: React.FC = () => {
   const topics = [
@@ -18,8 +20,7 @@ const Nav: React.FC = () => {
     "Internet of Things (IoT)",
     "UI/UX Design",
   ];
-
-  
+  const { isAuthenticated } = useUserContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const handleToggleMenu = () => {
@@ -32,15 +33,20 @@ const Nav: React.FC = () => {
           <span className="text-blue-400">Vibe</span>Write
         </Link>
       </div>
-      <div className="flex gap-3">
-        <div className="p-2 active:bg-blue-200">
-          <CiSearch className="size-6" />
+      <div className="flex gap-2 items-center">
+        <div className="p-2 cursor-pointer active:bg-blue-200">
+          <CiSearch className="size-5" />
         </div>
+        {isAuthenticated && (
+          <div className="flex items-center p-1 gap-2 cursor-pointer text-sm active:bg-blue-200 text-gray-700">
+            <FaPenClip className="size-3" /> <Link to="/createPost">Write</Link>
+          </div>
+        )}
         <div
           className="hamburger-menu p-2 active:bg-blue-200"
           onClick={handleToggleMenu}
         >
-          <HiMiniBars3 className="size-6" />
+          <HiMiniBars3 className="size-5" />
         </div>
       </div>
       {/* nav links menu  && overlay*/}
@@ -58,7 +64,7 @@ const Nav: React.FC = () => {
       >
         <div className="flex justify-end">
           <div className="p-2 active:bg-blue-200" onClick={handleToggleMenu}>
-            <IoMdClose className="size-6" />
+            <IoMdClose className="size-5" />
           </div>
         </div>
         <ul className="space-y-4 ">
@@ -68,13 +74,22 @@ const Nav: React.FC = () => {
             </li>
           ))}
         </ul>
-        <div className="buttons">
-         <Link to="/user/auth"> <Button
-            children="Login"
-            onClick={() => setIsOpen(false)}
-            className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white active:bg-blue-600"
-          /></Link>
-        </div>
+        {isAuthenticated ? (
+          <Link to="/" onClick={() => setIsOpen(false)}>
+            Home
+          </Link>
+        ) : (
+          <div className="buttons">
+            <Link to="/user/auth">
+              {" "}
+              <Button
+                children="Login"
+                onClick={() => setIsOpen(false)}
+                className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white active:bg-blue-600"
+              />
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );

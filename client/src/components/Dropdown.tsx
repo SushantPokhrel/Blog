@@ -1,12 +1,23 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
+type CategoryTypes =
+  | "Web Development"
+  | "App Development"
+  | "AI/ML"
+  | "Cyber Security"
+  | "Cloud Computing"
+  | "Data Science"
+  | "DevOps"
+  | "Blockchain"
+  | "Internet of Things (IoT)"
+  | "UI/UX Design";
 type Props = {
-  setCategory: (value:string) => void;
-  category:string
+  setCategory: React.Dispatch<React.SetStateAction<CategoryTypes>>;
+  category: CategoryTypes;
 };
-export default function DropdownMenuDemo({ setCategory ,category}: Props) {
-  const topics = [
+
+export default function DropdownMenuDemo({ setCategory, category }: Props) {
+  const topics: CategoryTypes[] = [
     "Web Development",
     "App Development",
     "AI/ML",
@@ -18,7 +29,7 @@ export default function DropdownMenuDemo({ setCategory ,category}: Props) {
     "Internet of Things (IoT)",
     "UI/UX Design",
   ];
-  const handleDropdown = (value: string) => {
+  const handleDropdown = (value: CategoryTypes) => {
     console.log(value);
     setCategory(value);
   };

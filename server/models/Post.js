@@ -6,7 +6,16 @@ const postSchema = new mongoose.Schema({
     ref: "user",
     required: true,
   },
+  authorName: {
+    type:   String,
+    required: true,
+  },
   title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  subTitle: {
     type: String,
     required: true,
     trim: true,
@@ -14,6 +23,7 @@ const postSchema = new mongoose.Schema({
   content: {
     type: String,
     required: true,
+    trim:true
   },
   banner: {
     type: String,

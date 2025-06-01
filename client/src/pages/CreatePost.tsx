@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type ReactNode } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io"; // Close icon
 import Button from "../components/Button";
 import Editor from "../components/Editor";
@@ -6,25 +6,160 @@ import DropdownMenuDemo from "../components/Dropdown";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const MAX_FILE_SIZE_MB = 1; // 1MB limit
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-const Post: React.FC = () => {
-  const topics = [
-    "Web Development",
-    "App Development",
-    "AI/ML",
-    "Cyber Security",
-    "Cloud Computing",
-    "Data Science",
-    "DevOps",
-    "Blockchain",
-    "Internet of Things (IoT)",
-    "UI/UX Design",
-  ];
+const topics = [
+  "Web Development",
+  "App Development",
+  "AI/ML",
+  "Cyber Security",
+  "Cloud Computing",
+  "Data Science",
+  "DevOps",
+  "Blockchain",
+  "Internet of Things (IoT)",
+  "UI/UX Design",
+];
+type CategoryTypes =
+  | "Web Development"
+  | "App Development"
+  | "AI/ML"
+  | "Cyber Security"
+  | "Cloud Computing"
+  | "Data Science"
+  | "DevOps"
+  | "Blockchain"
+  | "Internet of Things (IoT)"
+  | "UI/UX Design";
+const CreatePost: React.FC = () => {
+  // const topics = [
+  //   "Web Development",
+  //   "App Development",
+  //   "AI/ML",
+  //   "Cyber Security",
+  //   "Cloud Computing",
+  //   "Data Science",
+  //   "DevOps",
+  //   "Blockchain",
+  //   "Internet of Things (IoT)",
+  //   "UI/UX Design",
+  // ];
+  const topicTags = {
+    "Web Development": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "React",
+      "Angular",
+      "Vue.js",
+      "Next.js",
+      "SEO",
+      "Web Performance",
+      "Responsive Design",
+    ],
+    "App Development": [
+      "Android",
+      "iOS",
+      "Flutter",
+      "React Native",
+      "Kotlin",
+      "Swift",
+      "Cross-platform",
+      "App Design",
+      "User Testing",
+    ],
+    "AI/ML": [
+      "Machine Learning",
+      "Deep Learning",
+      "Python",
+      "TensorFlow",
+      "PyTorch",
+      "Data Preprocessing",
+      "NLP",
+      "Computer Vision",
+      "Model Training",
+    ],
+    "Cyber Security": [
+      "Penetration Testing",
+      "Ethical Hacking",
+      "Network Security",
+      "Encryption",
+      "Firewalls",
+      "Malware Analysis",
+      "Incident Response",
+    ],
+    "Cloud Computing": [
+      "AWS",
+      "Azure",
+      "Google Cloud",
+      "Serverless",
+      "Kubernetes",
+      "Cloud Storage",
+      "DevOps",
+      "Scalability",
+      "CDN",
+    ],
+    "Data Science": [
+      "Python",
+      "R",
+      "Data Visualization",
+      "Pandas",
+      "Numpy",
+      "Statistics",
+      "EDA",
+      "Big Data",
+      "Data Cleaning",
+    ],
+    DevOps: [
+      "CI/CD",
+      "Docker",
+      "Kubernetes",
+      "Jenkins",
+      "Monitoring",
+      "Infrastructure as Code",
+      "SRE",
+      "GitOps",
+    ],
+    Blockchain: [
+      "Smart Contracts",
+      "Ethereum",
+      "DeFi",
+      "Cryptocurrency",
+      "Solidity",
+      "Web3.js",
+      "dApps",
+      "Consensus Mechanisms",
+    ],
+    "Internet of Things (IoT)": [
+      "Sensors",
+      "Arduino",
+      "Raspberry Pi",
+      "MQTT",
+      "Edge Computing",
+      "IoT Security",
+      "Smart Devices",
+      "Home Automation",
+    ],
+    "UI/UX Design": [
+      "Wireframing",
+      "User Research",
+      "Interaction Design",
+      "Figma",
+      "Sketch",
+      "Adobe XD",
+      "Accessibility",
+      "Usability",
+      "Design Systems",
+    ],
+  };
+
+  console.log(topicTags["Web Development"]);
+
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [base64Img, setBase64Img] = useState("");
   const [fileName, setFileName] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState<CategoryTypes>("Web Development");
+  const [subTitle, setSubTitle] = useState("");
   const handleContent = (event: any, editor: any) => {
     setContent(editor.getData().trim());
   };
@@ -56,6 +191,7 @@ const Post: React.FC = () => {
       image: base64Img, // This is the base64 image
       category,
       tags,
+      subTitle,
     };
     if (!title || !content || !base64Img) {
       alert("Post cannot be empty");
@@ -117,7 +253,24 @@ const Post: React.FC = () => {
             required
           />
         </div>
-
+        {/* sub title */}
+        <div>
+          <label
+            htmlFor="subTitle"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Sub Title
+          </label>
+          <input
+            type="text"
+            name="subTitle"
+            className="w-full border border-gray-300 text-base p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter sub title"
+            value={subTitle}
+            onChange={(e) => setSubTitle(e.target.value)}
+            required
+          />
+        </div>
         {/* File Upload */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -191,7 +344,7 @@ const Post: React.FC = () => {
             Add Tags
           </label>
           <div className="tags flex gap-2 flex-wrap">
-            {topics.map((topic) => (
+            {/* {topics.map((topic) => (
               <Button
                 key={topic}
                 onClick={(e) => handleTags(e, topic)}
@@ -202,6 +355,19 @@ const Post: React.FC = () => {
                     : "bg-white  text-black"
                 }`}
               />
+            ))} */}
+            {topicTags[category].map((tag) => (
+              <Button
+                key={tag}
+                onClick={(e) => handleTags(e, tag)}
+                className={`hover:bg-blue-700 hover:text-white cursor-pointer text-[12px] px-3 py-2 border rounded-3xl ${
+                  tags.includes(tag)
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-black"
+                }`}
+              >
+                {tag}
+              </Button>
             ))}
           </div>
         </div>
@@ -229,4 +395,4 @@ const Post: React.FC = () => {
   );
 };
 
-export default Post;
+export default CreatePost;
