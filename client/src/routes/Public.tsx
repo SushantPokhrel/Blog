@@ -7,7 +7,11 @@ type PublicRouteProps = {
 const PublicRoute = ({ children }: PublicRouteProps) => {
   const { isAuthenticated, loading } = useUserContext();
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
   }
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 };

@@ -27,27 +27,34 @@ const Nav: React.FC = () => {
     setIsOpen((prev) => !prev);
   };
   return (
-    <nav className=" flex justify-between p-3 items-center shadow-sm shadow-gray-100 bg-white ">
-      <div className="flex items-center cursor-pointer logo-name text-lg ">
+    <nav className=" flex justify-between p-3 items-center shadow-sm shadow-gray-100 bg-white md:px-6">
+      <div className="flex items-center cursor-pointer logo-name text-lg md:text-xl font-semibold">
         <Link to="/">
           <span className="text-blue-400">Vibe</span>Write
         </Link>
       </div>
       <div className="flex gap-2 items-center">
-        <div className="p-2 cursor-pointer active:bg-blue-200">
-          <CiSearch className="size-5" />
-        </div>
         {isAuthenticated && (
-          <div className="flex items-center p-1 gap-2 cursor-pointer text-sm active:bg-blue-200 text-gray-700">
-            <FaPenClip className="size-3" /> <Link to="/createPost">Write</Link>
+          <div className="p-2 cursor-pointer active:bg-blue-200  text-gray-500 hover:text-gray-800">
+            <CiSearch className="size-5" />
           </div>
         )}
-        <div
-          className="hamburger-menu p-2 active:bg-blue-200"
-          onClick={handleToggleMenu}
-        >
-          <HiMiniBars3 className="size-5" />
-        </div>
+        {isAuthenticated && (
+          <Link
+            to="/createPost"
+            className="flex items-center p-1 gap-2 cursor-pointer text-sm active:bg-blue-200 text-gray-500 hover:text-gray-800"
+          >
+            <FaPenClip className="size-3" /> <span>Write</span>
+          </Link>
+        )}
+        {!isAuthenticated && (
+          <div
+            className="hamburger-menu p-2 active:bg-blue-200"
+            onClick={handleToggleMenu}
+          >
+            <HiMiniBars3 className="size-5" />
+          </div>
+        )}
       </div>
       {/* nav links menu  && overlay*/}
       {isOpen && (

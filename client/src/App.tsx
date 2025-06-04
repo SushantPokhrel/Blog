@@ -10,12 +10,15 @@ import NotFound from "./components/NotFound";
 import UserContextProvider from "./contexts/UserContext";
 import Dashboard from "./components/Dashboard";
 import UserPost from "./pages/UserPost";
+import Footer from "./components/Footer";
+import ScrollToTop from "./Utilities/ScrollToTop";
 
 function App() {
   return (
     <>
       <UserContextProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <Nav />
           <Routes>
             <Route
@@ -61,6 +64,7 @@ function App() {
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <Footer />
         </BrowserRouter>
       </UserContextProvider>
     </>

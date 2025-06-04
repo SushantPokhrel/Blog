@@ -4,35 +4,64 @@
   body {
     font-family: "Poppins", sans-serif;
     overflow-x: hidden;
+    scroll-behavior: smooth;
   }
+  .scrollbar-none::-webkit-scrollbar {
+    scroll-behavior: smooth;
+    display: none;
+  }
+  
+
   /* ckeditor css  */
   .ck-content h1,
   .post-display h1 {
-    @apply text-3xl font-semibold text-gray-800;
+    @apply text-3xl font-semibold text-gray-800 my-3;
   }
   .ck-content h2,
   .post-display h2 {
-    @apply text-2xl font-semibold text-gray-800;
+    @apply text-2xl font-semibold text-gray-800 my-3;
   }
   .ck-content h3,
   .post-display h3 {
-    @apply text-xl font-semibold text-gray-800;
+    @apply text-xl font-semibold text-gray-800 my-3;
   }
   .ck-editor-container {
     @apply max-w-4xl mx-auto m-4;
   }
-  
+
   .post-display img {
-    @apply block  mx-auto h-auto my-4;
+    @apply block  mx-auto h-auto my-6;
   }
-  .post-display a{
-    @apply text-sm text-blue-500 underline
+  .post-display a {
+    @apply text-sm text-blue-500 underline;
   }
-  .post-display p{
-    @apply text-base text-gray-800
+  .post-display p {
+    @apply text-base text-gray-700;
   }
 }
 
 .wrapper {
-  @apply px-4 py-8 max-w-4xl mx-auto;
+  @apply px-4 py-12 max-w-3xl mx-auto;
+}
+
+.refLink {
+  @apply text-blue-500 underline text-sm;
+}
+@media (max-width: 425px) {
+  .ck-content h1,
+  .post-display h1 {
+    @apply text-2xl font-semibold text-gray-800 my-2;
+  }
+  .ck-content h2,
+  .post-display h2 {
+    @apply text-xl font-semibold text-gray-800 my-2;
+  }
+  .ck-content h3,
+  .post-display h3 {
+    @apply text-lg font-semibold text-gray-800 my-2;
+  }
+  .post-display p,
+  .post-display li {
+    @apply text-[14px] text-gray-700;
+  }
 }

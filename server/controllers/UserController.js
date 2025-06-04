@@ -143,7 +143,7 @@ const googleController = async (req, res) => {
           picture: newUser.picture,
         },
         process.env.JWT_SECRET_KEY,
-        { expiresIn: "60m" } // token expires in 60 minutes
+        { expiresIn: "55m" } // token expires in 60 minutes
       );
 
       // return a cookie to client
@@ -152,7 +152,6 @@ const googleController = async (req, res) => {
         secure: false, //dev=false
         sameSite: "lax", // development
         maxAge: 3600000, //1hr in ms
-
       });
       return res.status(200).json({
         message: "Login successful",
@@ -173,7 +172,7 @@ const googleController = async (req, res) => {
         picture: existingUser.picture,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "60m" } // token expires in 60 minutes
+      { expiresIn: "55m" } // token expires in 60 minutes
     );
 
     // return a cookie to client

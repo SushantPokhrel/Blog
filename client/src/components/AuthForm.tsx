@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useUserContext } from "../contexts/UserContext";
@@ -18,9 +17,7 @@ const AuthForm: React.FC = () => {
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
-  const { isAuthenticated, setIsAuthenticated, setUser, fetchPosts } =
-    useUserContext();
+  const { setIsAuthenticated, setUser } = useUserContext();
   // google login function
   const googleLogin = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
@@ -33,8 +30,12 @@ const AuthForm: React.FC = () => {
         },
         body: JSON.stringify({ code: credentialResponse.code }),
       });
-      const { username, email, picture, role } = await response.json();
+      console.log(response);
+      const data = await response.json();
+      console.log(data);
       if (response.status === 200 || response.status === 201) {
+        const { username, email, picture, role } = data;
+
         setUser({
           username,
           email,
@@ -43,7 +44,6 @@ const AuthForm: React.FC = () => {
         });
         setIsAuthenticated(true);
       }
-      navigate("/dashboard");
     },
     onError: (error) => {
       console.error("Google login error:", error);
@@ -86,9 +86,7 @@ const AuthForm: React.FC = () => {
   const toggleAuthMode = () => {
     setLogin((prev) => !prev);
   };
-  useEffect(() => {
-    fetchPosts();
-  }, [isAuthenticated]);
+
   return (
     <div className="form-container wrapper">
       <form
@@ -144,7 +142,7 @@ const AuthForm: React.FC = () => {
         <div>
           <Button
             children={login ? "Login" : "Sign Up"}
-            className="bg-blue-600 w-full text-sm text-white py-2 px-1.5"
+            className="bg-blue-600 w-full text-sm text-white py-2 px-1.5 hover:bg-blue-700"
             type="submit"
           />
         </div>

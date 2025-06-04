@@ -20,6 +20,7 @@ type Post = {
   _id: string;
   authorName: string;
   createdAt: string;
+  likeCount: number;
 };
 
 type UserContextTypes = {
@@ -32,7 +33,6 @@ type UserContextTypes = {
   posts: Post[];
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
   loadingPosts: boolean;
-  fetchPosts:()=>void
 };
 
 type UserContextProviderProps = {
@@ -104,7 +104,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
   // fetch all posts
   const fetchPosts = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/posts/all", {
+      const res = await fetch(`${backendUrl}/api/posts/all`, {
         credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to fetch posts");
@@ -113,6 +113,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
       setPosts(data);
     } catch (err) {
       console.error("Error fetching posts:", err);
+    } finally {
       setLoadingPosts(false);
     }
   };
@@ -121,13 +122,17 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
     checkAuth();
     fetchPosts();
 
-    const intervalId = setTimeout(() => {
+    const intervalId = setInterval(() => {
       checkAuth();
     }, 5 * 60 * 1000);
 
     return () => clearTimeout(intervalId);
   }, []);
-
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchPosts();
+    }
+  }, [isAuthenticated]);
   return (
     <UserContext.Provider
       value={{
@@ -140,7 +145,6 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
         posts,
         setPosts,
         loadingPosts,
-        fetchPosts
       }}
     >
       {children}

@@ -7,7 +7,12 @@ type ProtectedRouteProps = {
 };
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, loading } = useUserContext();
-  if (loading) return <Loader />; // 
+  if (loading)
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    ); //
 
   return isAuthenticated ? children : <Navigate to="/user/auth" replace />; // replaces the protected route
 };

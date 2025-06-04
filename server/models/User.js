@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: false,
   },
+  likedPosts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "post",
+    },
+  ],
   role: { type: String, enum: ["user", "admin"], default: "user" },
   picture: { type: String },
   googleId: { type: String }, // optional

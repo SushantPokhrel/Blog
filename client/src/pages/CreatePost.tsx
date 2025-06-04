@@ -6,18 +6,7 @@ import DropdownMenuDemo from "../components/Dropdown";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const MAX_FILE_SIZE_MB = 1; // 1MB limit
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
-const topics = [
-  "Web Development",
-  "App Development",
-  "AI/ML",
-  "Cyber Security",
-  "Cloud Computing",
-  "Data Science",
-  "DevOps",
-  "Blockchain",
-  "Internet of Things (IoT)",
-  "UI/UX Design",
-];
+
 type CategoryTypes =
   | "Web Development"
   | "App Development"

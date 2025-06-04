@@ -72,21 +72,67 @@ router.get("/all", verifyToken, async (req, res) => {
   try {
     const posts = await postSchema.find();
     console.log(posts);
-    return res.status(200).json(posts);
+
+    const updatedPosts = posts.map((post) => {
+      // post.toObject().likeCount = post.likes.length;
+      const obj = post.toObject();
+      obj.likeCount = post.likes.length;
+      return obj;
+    });
+    return res.status(200).json(updatedPosts);
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+// post a like
+router.post("/liked/:id", verifyToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user_id } = req.user;
+    console.log(typeof user_id);
+    const post = await postSchema.findById(id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    if (post.likes.includes(user_id)) {
+      // Unlike
+      post.likes = post.likes.filter((user) => user?.toString() !== user_id);
+    } else {
+      // Like
+      post.likes.push(user_id);
+    }
+
+    await post.save();
+
+    return res.status(200).json({
+      likes: post.likes.length,
+      liked: post.likes.includes(user_id), // return liked status
+    });
+  } catch (error) {
+    console.error("Error liking post:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.get("/:id", verifyToken, async (req, res) => {
   try {
     const { id } = req.params;
+    const { user_id } = req.user;
     const post = await postSchema.findById(id);
-    if (!post) return res.status(404).json({ message: "Post not found" });
-    return res.status(200).json(post);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Create a plain object so you can add properties outside the schema
+    const obj = post.toObject();
+    obj.likeCount = post.likes.length;
+    obj.isLiked = post.likes.includes(user_id);
+
+    return res.status(200).json(obj);
   } catch (error) {
-    console.error("Error fetching posts:", error);
+    console.error("Error fetching post:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 module.exports = router;
