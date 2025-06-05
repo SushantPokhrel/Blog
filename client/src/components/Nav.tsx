@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { HiMiniBars3 } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io"; // Close icon
@@ -26,6 +26,13 @@ const Nav: React.FC = () => {
   const handleToggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "scroll";
+    }
+  }, [isOpen]);
   return (
     <nav className=" flex justify-between p-3 items-center shadow-sm shadow-gray-100 bg-white md:px-6">
       <div className="flex items-center cursor-pointer logo-name text-lg md:text-xl font-semibold">
@@ -47,14 +54,12 @@ const Nav: React.FC = () => {
             <FaPenClip className="size-3" /> <span>Write</span>
           </Link>
         )}
-        {!isAuthenticated && (
-          <div
-            className="hamburger-menu p-2 active:bg-blue-200"
-            onClick={handleToggleMenu}
-          >
-            <HiMiniBars3 className="size-5" />
-          </div>
-        )}
+        <div
+          className="hamburger-menu p-2 active:bg-blue-200 text-gray-500 md:hidden"
+          onClick={handleToggleMenu}
+        >
+          <HiMiniBars3 className="size-5" />
+        </div>
       </div>
       {/* nav links menu  && overlay*/}
       {isOpen && (
@@ -70,13 +75,19 @@ const Nav: React.FC = () => {
         }`}
       >
         <div className="flex justify-end">
-          <div className="p-2 active:bg-blue-200" onClick={handleToggleMenu}>
+          <div
+            className="p-2 active:bg-blue-200 text-gray-500 "
+            onClick={handleToggleMenu}
+          >
             <IoMdClose className="size-5" />
           </div>
         </div>
         <ul className="space-y-4 ">
           {topics.map((topic, index) => (
-            <li key={index} className={`hover:text-blue-300 cursor-pointer`}>
+            <li
+              key={index}
+              className={`hover:text-blue-300 cursor-pointer text-gray-700 `}
+            >
               {topic}
             </li>
           ))}

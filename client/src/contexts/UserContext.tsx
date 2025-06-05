@@ -22,7 +22,19 @@ type Post = {
   createdAt: string;
   likeCount: number;
 };
-
+const Category = [
+  "For You",
+  "Web Development",
+  "App Development",
+  "AI/ML",
+  "Cyber Security",
+  "Cloud Computing",
+  "Data Science",
+  "DevOps",
+  "Blockchain",
+  "Internet of Things (IoT)",
+  "UI/UX Design",
+];
 type UserContextTypes = {
   user: UserTypes;
   setUser: React.Dispatch<React.SetStateAction<UserTypes>>;
@@ -33,6 +45,9 @@ type UserContextTypes = {
   posts: Post[];
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
   loadingPosts: boolean;
+  category: string;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
+  fetchPosts:() => Promise<void>
 };
 
 type UserContextProviderProps = {
@@ -54,6 +69,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
   const [loading, setLoading] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [category, setCategory] = useState("For You");
   // check user authentication state
   const checkAuth = async () => {
     try {
@@ -104,7 +120,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
   // fetch all posts
   const fetchPosts = async () => {
     try {
-      const res = await fetch(`${backendUrl}/api/posts/all`, {
+      const res = await fetch(`${backendUrl}/api/posts/?category=${category}`, {
         credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to fetch posts");
@@ -145,6 +161,9 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
         posts,
         setPosts,
         loadingPosts,
+        category,
+        setCategory,
+        fetchPosts
       }}
     >
       {children}

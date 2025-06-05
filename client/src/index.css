@@ -38,6 +38,9 @@
   .post-display p {
     @apply text-base text-gray-700;
   }
+  .post-display ul,ol{
+    @apply list-inside list-disc;
+  }
 }
 
 .wrapper {

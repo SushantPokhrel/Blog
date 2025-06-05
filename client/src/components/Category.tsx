@@ -1,8 +1,10 @@
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import { useRef } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
 import { useUserContext } from "../contexts/UserContext";
+import { useNavigate, useLocation } from "react-router-dom";
+
 const topics = [
+  "For You",
   "Web Development",
   "App Development",
   "AI/ML",
@@ -14,51 +16,68 @@ const topics = [
   "Internet of Things (IoT)",
   "UI/UX Design",
 ];
+
 const Category = () => {
   const ulRef = useRef<HTMLUListElement | null>(null);
-  const { posts } = useUserContext();
+  const { fetchPosts, setCategory, category } = useUserContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleCategory = (value: string) => {
+    setCategory(value);
+
+    if (value === "For You") {
+      // Go to root path without query param
+      navigate("/", { replace: true });
+    } else {
+      // Add query param ?category=value
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("category", value.replace(" ", "-").toLowerCase());
+      navigate(`/?${searchParams.toString()}`, { replace: true });
+    }
+  };
+
   const handleScroll = (direction: string) => {
     if (!ulRef.current) return;
 
     const scrollAmount = 150;
-    console.log(ulRef.current.scrollLeft);
     if (direction === "left") {
       ulRef.current.scrollLeft -= scrollAmount;
-      console.log(ulRef.current.scrollLeft);
     } else if (direction === "right") {
-      console.log(ulRef.current.scrollLeft);
       ulRef.current.scrollLeft += scrollAmount;
-      console.log(ulRef.current.scrollLeft);
     }
   };
+
+  useEffect(() => {
+    if (category) {
+      fetchPosts();
+    }
+  }, [category]);
+
   return (
     <div className="relative max-w-xs md:max-w-2xl mx-auto ">
-      <div className="arrowContainer flex justify-between mb-2.5 absolute pointer-events-none z-10 w-full">
+      <div className="arrowContainer flex justify-between absolute top-0 pointer-events-none z-10 w-full">
         <FaChevronLeft
-          className="size-4 
-            cursor-pointer text-gray-600 pointer-events-auto"
+          className="size-4 cursor-pointer text-gray-400 pointer-events-auto hover:text-gray-600"
           onClick={() => handleScroll("left")}
-        />{" "}
+        />
         <FaChevronRight
-          className="size-4 text-gray-600 cursor-pointer pointer-events-auto"
+          className="size-4 cursor-pointer text-gray-400 pointer-events-auto hover:text-gray-600"
           onClick={() => handleScroll("right")}
         />
       </div>
       <div className="container">
         <ul
           ref={ulRef}
-          className="flex  gap-5 overflow-x-scroll scrollbar-none"
+          className="flex gap-5 overflow-x-scroll scrollbar-none "
         >
           {topics.map((topic) => (
             <li
+              onClick={() => handleCategory(topic)}
               key={topic}
-              className="text-xs text-gray-500 whitespace-nowrap text-center "
-              onClick={() => console.log(topic)}
+              className={`text-xs whitespace-nowrap text-center text-gray-600 hover:underline hover:text-gray-800`}
             >
-              <Link to={`/?tag=${topic.replace(/\s+/g, "-").toLowerCase()}`}>
-                {" "}
-                {topic}
-              </Link>
+              {topic}
             </li>
           ))}
         </ul>
