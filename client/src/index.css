@@ -38,7 +38,7 @@
   .post-display p {
     @apply text-base text-gray-700;
   }
-  .post-display ul,ol{
+  .post-display ol{
     @apply list-inside list-disc;
   }
 }

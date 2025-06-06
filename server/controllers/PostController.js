@@ -85,7 +85,7 @@ const getPostsByCategory = async (req, res) => {
   console.log(category);
 
   if (category === "For You") {
-    return await getAllPosts(req, res);
+    return getAllPosts(req, res);
   }
 
   try {

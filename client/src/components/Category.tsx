@@ -1,7 +1,7 @@
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUserContext } from "../contexts/UserContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 const topics = [
   "For You",
@@ -19,22 +19,18 @@ const topics = [
 
 const Category = () => {
   const ulRef = useRef<HTMLUListElement | null>(null);
-  const { fetchPosts, setCategory, category } = useUserContext();
-  const navigate = useNavigate();
+  const { fetchPosts, setCategory, category } =
+    useUserContext();
   const location = useLocation();
-
+  const [searchParams, setSearchParams] = useSearchParams(location.search);
   const handleCategory = (value: string) => {
     setCategory(value);
-
-    if (value === "For You") {
-      // Go to root path without query param
-      navigate("/", { replace: true });
-    } else {
-      // Add query param ?category=value
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("category", value.replace(" ", "-").toLowerCase());
-      navigate(`/?${searchParams.toString()}`, { replace: true });
-    }
+    // if (value === "for you") {
+    //   setSearchParams({});
+      
+    //   return;
+    // }
+    setSearchParams({ category: value });
   };
 
   const handleScroll = (direction: string) => {
@@ -73,9 +69,11 @@ const Category = () => {
         >
           {topics.map((topic) => (
             <li
-              onClick={() => handleCategory(topic)}
+              onClick={() => handleCategory(topic.toLowerCase())}
               key={topic}
-              className={`text-xs whitespace-nowrap text-center text-gray-600 hover:underline hover:text-gray-800`}
+              className={`${
+                category === topic.toLowerCase() ? "text-gray-800 underline" : "text-gray-500"
+              } text-xs cursor-pointer whitespace-nowrap text-center  hover:underline hover:text-gray-800`}
             >
               {topic}
             </li>

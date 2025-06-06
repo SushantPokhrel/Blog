@@ -20,7 +20,7 @@ const Nav: React.FC = () => {
     "Internet of Things (IoT)",
     "UI/UX Design",
   ];
-  const { isAuthenticated } = useUserContext();
+  const { isAuthenticated ,setCategory} = useUserContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const handleToggleMenu = () => {
@@ -36,7 +36,7 @@ const Nav: React.FC = () => {
   return (
     <nav className=" flex justify-between p-3 items-center shadow-sm shadow-gray-100 bg-white md:px-6">
       <div className="flex items-center cursor-pointer logo-name text-lg md:text-xl font-semibold">
-        <Link to="/">
+        <Link to="/" onClick={()=>setCategory("For You")}>
           <span className="text-blue-400">Vibe</span>Write
         </Link>
       </div>

@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 type UserTypes = {
@@ -22,19 +21,7 @@ type Post = {
   createdAt: string;
   likeCount: number;
 };
-const Category = [
-  "For You",
-  "Web Development",
-  "App Development",
-  "AI/ML",
-  "Cyber Security",
-  "Cloud Computing",
-  "Data Science",
-  "DevOps",
-  "Blockchain",
-  "Internet of Things (IoT)",
-  "UI/UX Design",
-];
+
 type UserContextTypes = {
   user: UserTypes;
   setUser: React.Dispatch<React.SetStateAction<UserTypes>>;
@@ -47,7 +34,10 @@ type UserContextTypes = {
   loadingPosts: boolean;
   category: string;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
-  fetchPosts:() => Promise<void>
+  fetchPosts: () => Promise<void>;
+  setLoadingPosts: React.Dispatch<React.SetStateAction<boolean>>;
+  categoryPostsLoading: boolean;
+  setCategoryPostsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type UserContextProviderProps = {
@@ -68,9 +58,13 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(true);
+  const [categoryPostsLoading, setCategoryPostsLoading] = useState(true);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [category, setCategory] = useState("For You");
-  // check user authentication state
+  const [category, setCategory] = useState(() => {
+    console.log(location.search);
+    const searchParams = new URLSearchParams(location.search);
+    return searchParams.get("category") || "For You";
+  }); // check user authentication state
   const checkAuth = async () => {
     try {
       const response = await fetch(`${backendUrl}/api/auth/me`, {
@@ -119,10 +113,14 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
   };
   // fetch all posts
   const fetchPosts = async () => {
+    setCategoryPostsLoading(true);
     try {
-      const res = await fetch(`${backendUrl}/api/posts/?category=${category}`, {
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${backendUrl}/api/posts/?category=${capitalizeAfterSpace(category)}`,
+        {
+          credentials: "include",
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch posts");
       const data = await res.json();
       console.log("Fetched posts:", data);
@@ -131,9 +129,15 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
       console.error("Error fetching posts:", err);
     } finally {
       setLoadingPosts(false);
+      setCategoryPostsLoading(false);
     }
   };
-
+  const capitalizeAfterSpace = (str: string) => {
+    return str
+      .split(" ")
+      .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
   useEffect(() => {
     checkAuth();
     fetchPosts();
@@ -142,13 +146,14 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
       checkAuth();
     }, 5 * 60 * 1000);
 
-    return () => clearTimeout(intervalId);
+    return () => clearInterval(intervalId);
   }, []);
   useEffect(() => {
     if (isAuthenticated) {
       fetchPosts();
     }
   }, [isAuthenticated]);
+
   return (
     <UserContext.Provider
       value={{
@@ -163,7 +168,10 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
         loadingPosts,
         category,
         setCategory,
-        fetchPosts
+        fetchPosts,
+        setLoadingPosts,
+        categoryPostsLoading,
+        setCategoryPostsLoading,
       }}
     >
       {children}

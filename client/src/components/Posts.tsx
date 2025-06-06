@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUserContext } from "../contexts/UserContext";
 import { Link } from "react-router-dom";
 import { PiHandsClappingThin } from "react-icons/pi";
-
+import Loader from "./Loader";
 const Posts: React.FC = () => {
   const Months = [
     "Jan",
@@ -19,7 +19,7 @@ const Posts: React.FC = () => {
     "Dec",
   ];
 
-  const { posts, loadingPosts } = useUserContext();
+  const { posts, categoryPostsLoading } = useUserContext();
   const formatDate = (isoDate: string) => {
     const d = new Date(isoDate);
     const day = d.getDate().toString().padStart(2, "0"); // ensures 01, 02 etc.
@@ -27,6 +27,11 @@ const Posts: React.FC = () => {
     const year = d.getFullYear();
     return `${month} ${day}, ${year}`;
   };
+  if (categoryPostsLoading) {
+   return <div className="flex justify-center items-center">
+      <Loader />
+    </div>;
+  }
   return (
     <div className=" flex flex-col gap-4 ">
       {posts.map((post) => (
