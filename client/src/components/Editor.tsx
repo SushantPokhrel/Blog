@@ -6,7 +6,6 @@ import {
   ClassicEditor,
   PictureEditing,
   Base64UploadAdapter,
-  Code,
 } from "ckeditor5";
 
 import {

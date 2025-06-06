@@ -1,5 +1,5 @@
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef} from "react";
 import { useUserContext } from "../contexts/UserContext";
 import { useLocation, useSearchParams } from "react-router-dom";
 
@@ -22,7 +22,7 @@ const Category = () => {
   const { fetchPosts, setCategory, category } =
     useUserContext();
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams(location.search);
+  const [_, setSearchParams] = useSearchParams(location.search);
   const handleCategory = (value: string) => {
     setCategory(value);
     // if (value === "for you") {

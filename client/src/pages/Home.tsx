@@ -1,4 +1,3 @@
-import React from "react";
 import { useUserContext } from "../contexts/UserContext";
 import NotFound from "../components/NotFound";
 import Loader from "../components/Loader";

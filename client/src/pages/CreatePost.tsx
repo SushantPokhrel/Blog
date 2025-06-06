@@ -149,7 +149,7 @@ const CreatePost: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [category, setCategory] = useState<CategoryTypes>("Web Development");
   const [subTitle, setSubTitle] = useState("");
-  const handleContent = (event: any, editor: any) => {
+  const handleContent = (_: any, editor: any) => {
     setContent(editor.getData().trim());
   };
 
@@ -206,7 +206,7 @@ const CreatePost: React.FC = () => {
       console.error("Error submitting post:", err);
     }
   };
-  const handleTags = (e: React.MouseEvent<HTMLButtonElement>, tag: string) => {
+  const handleTags = (_: React.MouseEvent<HTMLButtonElement>, tag: string) => {
     if (!tags.includes(tag)) {
       setTags((prev) => [...prev, tag]);
       return;

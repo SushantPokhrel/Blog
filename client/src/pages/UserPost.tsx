@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import Prism from "prismjs";
 import { PiHandsClappingThin } from "react-icons/pi";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
