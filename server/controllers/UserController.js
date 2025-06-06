@@ -5,10 +5,10 @@ const adminEmail = process.env.ADMIN_EMAIL;
 const fetch = require("node-fetch");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client();
+
 const signupController = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    // Check required fields
     if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -18,12 +18,14 @@ const signupController = async (req, res) => {
       USER.findOne({ email }),
       USER.findOne({ username }),
     ]);
+
     if (existingUserEmail) {
       return res.status(409).json({ message: "Email already registered" });
     }
     if (existingUserName) {
       return res.status(409).json({ message: "Username already exists" });
     }
+
     const newUser = new USER({ username, email, password });
     await newUser.save();
 
@@ -33,29 +35,31 @@ const signupController = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password)
+    if (!email || !password) {
       return res.status(400).json({
         message: "All fields are required",
       });
-    // find user
+    }
+
     const User = await USER.findOne({ email });
     if (!User) {
       return res.status(404).json({ message: "User not found" });
     }
-    //assign role for admin
+
     if (User.email === adminEmail) {
       User.role = "admin";
       await User.save();
     }
-    //compare password
+
     const isMatch = await bcrypt.compare(password, User.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    // generate jwt token if password matches
+
     const token = jwt.sign(
       {
         user_id: User._id,
@@ -64,16 +68,17 @@ const loginController = async (req, res) => {
         role: User.role,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "60m" } // token expires in 60 minutes
+      { expiresIn: "60m" }
     );
 
-    // return a cookie to client
+    // Directly set the cookie with environment-based options
     res.cookie("token", token, {
-      httpOnly: true, // only access via server
-      secure: false, //dev=false
-      sameSite: "lax", // development
-      maxAge: 3600000, //1hr in ms
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 3600000, // 1 hour in ms
     });
+
     return res.status(200).json({
       message: "Login successful",
       email: User.email,
@@ -88,11 +93,11 @@ const loginController = async (req, res) => {
     });
   }
 };
+
 const googleController = async (req, res) => {
   const { code } = req.body;
 
   try {
-    // Exchange the code for tokens
     const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       credentials: "include",
@@ -109,21 +114,17 @@ const googleController = async (req, res) => {
     });
     const { id_token } = await tokenRes.json();
 
-    // Verify the ID token
     const ticket = await client.verifyIdToken({
       idToken: id_token,
       audience: process.env.OAUTH_CLIENT_ID,
     });
-    console.log(ticket);
-    const payload = ticket.getPayload();
-    console.log(payload);
-    const { email, name, picture, sub: googleId } = payload; //property renaming
 
-    // Optional: create/find user in DB here
+    const payload = ticket.getPayload();
+    const { email, name, picture, sub: googleId } = payload;
+
     let existingUser = await USER.findOne({ email });
 
     if (!existingUser) {
-      // User doesn't exist, create new
       const newUser = new USER({
         email,
         username: name,
@@ -134,6 +135,7 @@ const googleController = async (req, res) => {
         newUser.role = "admin";
       }
       await newUser.save();
+
       const token = jwt.sign(
         {
           user_id: newUser._id,
@@ -143,16 +145,16 @@ const googleController = async (req, res) => {
           picture: newUser.picture,
         },
         process.env.JWT_SECRET_KEY,
-        { expiresIn: "55m" } // token expires in 60 minutes
+        { expiresIn: "55m" }
       );
 
-      // return a cookie to client
       res.cookie("token", token, {
-        httpOnly: true, // only access via server
-        secure: false, //dev=false
-        sameSite: "lax", // development
-        maxAge: 3600000, //1hr in ms
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 3600000, // 1 hour in ms
       });
+
       return res.status(200).json({
         message: "Login successful",
         email: newUser.email,
@@ -172,16 +174,16 @@ const googleController = async (req, res) => {
         picture: existingUser.picture,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "55m" } // token expires in 60 minutes
+      { expiresIn: "55m" }
     );
 
-    // return a cookie to client
     res.cookie("token", token, {
-      httpOnly: true, // only access via server
-      secure: false, //dev=false
-      sameSite: "lax", // development
-      maxAge: 3600000, //1hr in ms
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 3600000, // 1 hour in ms
     });
+
     return res.status(200).json({
       message: "Login successful",
       email: existingUser.email,
@@ -195,4 +197,5 @@ const googleController = async (req, res) => {
     res.status(500).json({ message: "Google login failed" });
   }
 };
+
 module.exports = { signupController, loginController, googleController };
