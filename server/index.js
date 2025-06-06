@@ -32,9 +32,7 @@ app.use(cookieParser());
 // routes
 app.use("/api/auth", userRoutes);
 app.use("/api/posts", postRoutes);
-app.get("/", (req, res) => {
-  return res.redirect("https://www.youtube.com");
-});
+
 app.listen(PORT, () => {
   console.log("server started ", PORT);
 });
