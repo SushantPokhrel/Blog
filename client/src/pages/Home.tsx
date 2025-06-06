@@ -18,7 +18,7 @@ function Home() {
   return (
     <div className="wrapper flex flex-col gap-4">
       <Category />
-      {posts.length ? <Posts /> : <NotFound />}
+      {posts.length ? <Posts /> : <NotFound children="Write a Post"/>}
     </div>
   );
 }

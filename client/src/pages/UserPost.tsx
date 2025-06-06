@@ -108,7 +108,7 @@ function UserPost() {
   };
 
   if (!loading && !post._id) {
-    return <NotFound />;
+    return <NotFound children="Home" />;
   }
   if (loading)
     return (
@@ -118,11 +118,13 @@ function UserPost() {
     );
 
   return (
-    <div className="max-w-3xl mx-auto p-2 my-8">
-      <div className="mb-6 flex flex-col gap-6 m-2 pb-4">
-        <div className="flex flex-col gap-5">
-          <h1 className="text-3xl font-bold text-gray-800">{post.title}</h1>
-          <h2 className="text-base font-normal text-gray-600">
+    <div className="wrapper">
+      <div className="mb-6 flex flex-col gap-8 m-2 pb-4">
+        <div className="flex flex-col gap-3 md:gap-4">
+          <h1 className="text-3xl font-bold text-gray-800 md:text-4xl">
+            {post.title}
+          </h1>
+          <h2 className="text-base font-normal text-gray-600 md:text-lg">
             {post.subTitle}
           </h2>
           <div className="mt-2 flex flex-col text-[13px] font-normal">
@@ -150,13 +152,15 @@ function UserPost() {
             ))}
           </div>
         </div>
-        <div className="extra flex justify-between">
+        <div className="extra flex justify-between border-b border-b-gray-200">
           <span
             className="flex gap-1 justify-start  p-2 items-center cursor-pointer  active:bg-blue-200"
             onClick={handleLikes}
           >
             <PiHandsClappingThin
-              className={`size-5 ${isLiked ? "text-black" : " text-gray-500"}`}
+              className={`size-5 ${
+                isLiked ? "text-black scale-125" : " text-gray-500 scale-100"
+              }`}
             />
             <span className="text-sm text-gray-700 font-light">
               {likeCount}
@@ -170,13 +174,15 @@ function UserPost() {
           content={post.content}
           className="max-w-none post-display"
         />
-        <div className="extra flex justify-between">
+        <div className="extra border-b border-b-gray-200 flex justify-between">
           <span
             className="flex gap-1 justify-start items-center active:bg-blue-200 p-2 cursor-pointer"
             onClick={handleLikes}
           >
             <PiHandsClappingThin
-              className={`size-5 ${isLiked ? "text-black" : " text-gray-500"}`}
+              className={`size-5 ${
+                isLiked ? "text-black scale-125" : " text-gray-500 scale-100"
+              }`}
             />
             <span className="text-sm text-gray-700 font-light">
               {likeCount}

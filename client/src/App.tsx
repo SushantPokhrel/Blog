@@ -62,7 +62,7 @@ function App() {
               }
             />
 
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<NotFound children="Home"/>} />
           </Routes>
           <Footer />
         </BrowserRouter>

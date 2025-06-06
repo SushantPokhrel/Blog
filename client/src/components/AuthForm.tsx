@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useUserContext } from "../contexts/UserContext";
@@ -18,31 +18,35 @@ const AuthForm: React.FC = () => {
     password: "",
   });
   const { setIsAuthenticated, setUser } = useUserContext();
+  const focusRef = useRef<HTMLButtonElement | null>(null);
   // google login function
   const googleLogin = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
-      console.log("Google login success:", credentialResponse);
-      const response = await fetch(`${backendUrl}/api/auth/google`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ code: credentialResponse.code }),
-      });
-      console.log(response);
-      const data = await response.json();
-      console.log(data);
-      if (response.status === 200 || response.status === 201) {
-        const { username, email, picture, role } = data;
-
-        setUser({
-          username,
-          email,
-          profilePhoto: picture,
-          role,
+      try {
+        const response = await fetch(`${backendUrl}/api/auth/google`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code: credentialResponse.code }),
         });
-        setIsAuthenticated(true);
+        console.log(response);
+        const data = await response.json();
+        console.log(data);
+        if (response.status === 200 || response.status === 201) {
+          const { username, email, picture, role } = data;
+
+          setUser({
+            username,
+            email,
+            profilePhoto: picture,
+            role,
+          });
+          setIsAuthenticated(true);
+        }
+      } catch (e: any) {
+        console.log(e);
       }
     },
     onError: (error) => {
@@ -77,21 +81,27 @@ const AuthForm: React.FC = () => {
     const data = await response.json();
     console.log(data);
   };
+  // handle change function
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
+  // toggle auth mode
   const toggleAuthMode = () => {
     setLogin((prev) => !prev);
   };
-
+  useEffect(() => {
+    if (focusRef.current) {
+      focusRef.current.focus();
+    }
+  }, []);
   return (
     <div className="form-container wrapper">
       <form
         onSubmit={handleSubmit}
-        className="w-11/12 max-w-xl flex flex-col gap-4 rounded-lg mx-auto shadow-lg py-6 px-5"
+        className="w-11/12 max-w-lg flex flex-col gap-4 rounded-lg mx-auto shadow-lg py-6 px-5"
       >
         <h1 className="text-xl font-semibold">{login ? "Login" : "Sign Up"}</h1>
 
@@ -154,8 +164,9 @@ const AuthForm: React.FC = () => {
             <div className=" border-t border-gray-500 flex-1"></div>
           </div>
           <Button
+            ref={focusRef}
             onClick={googleLogin}
-            className="flex w-full p-2 active:bg-blue-300 justify-center gap-2 text-gray-700 cursor-pointer"
+            className={`flex w-full p-2  active:bg-blue-300 focus:outline-blue-600   hover:bg-blue-100 justify-center gap-2 text-gray-700 cursor-pointer`}
           >
             <FcGoogle className="size-5" /> <span>Continue with Google</span>
           </Button>

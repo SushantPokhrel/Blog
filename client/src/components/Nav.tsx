@@ -20,7 +20,7 @@ const Nav: React.FC = () => {
     "Internet of Things (IoT)",
     "UI/UX Design",
   ];
-  const { isAuthenticated ,setCategory} = useUserContext();
+  const { isAuthenticated, setCategory } = useUserContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const handleToggleMenu = () => {
@@ -36,7 +36,7 @@ const Nav: React.FC = () => {
   return (
     <nav className=" flex justify-between p-3 items-center shadow-sm shadow-gray-100 bg-white md:px-6">
       <div className="flex items-center cursor-pointer logo-name text-lg md:text-xl font-semibold">
-        <Link to="/" onClick={()=>setCategory("For You")}>
+        <Link to="/" onClick={() => setCategory("For You")}>
           <span className="text-blue-400">Vibe</span>Write
         </Link>
       </div>
@@ -54,12 +54,14 @@ const Nav: React.FC = () => {
             <FaPenClip className="size-3" /> <span>Write</span>
           </Link>
         )}
-        <div
-          className="hamburger-menu p-2 active:bg-blue-200 text-gray-500 md:hidden"
-          onClick={handleToggleMenu}
-        >
-          <HiMiniBars3 className="size-5" />
-        </div>
+        {isAuthenticated && (
+          <div
+            className="hamburger-menu p-2 active:bg-blue-200 text-gray-500 md:hidden"
+            onClick={handleToggleMenu}
+          >
+            <HiMiniBars3 className="size-5" />
+          </div>
+        )}
       </div>
       {/* nav links menu  && overlay*/}
       {isOpen && (

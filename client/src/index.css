@@ -7,10 +7,11 @@
     scroll-behavior: smooth;
   }
   .scrollbar-none::-webkit-scrollbar {
-    scroll-behavior: smooth;
     display: none;
   }
-  
+ .scrollbar-none{
+  scroll-behavior: smooth
+ }
 
   /* ckeditor css  */
   .ck-content h1,
@@ -38,7 +39,7 @@
   .post-display p {
     @apply text-base text-gray-700;
   }
-  .post-display ol{
+  .post-display ol {
     @apply list-inside list-disc;
   }
 }
