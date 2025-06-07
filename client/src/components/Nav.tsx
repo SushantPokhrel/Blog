@@ -4,8 +4,7 @@ import { IoMdClose } from "react-icons/io"; // Close icon
 import { FaPenClip } from "react-icons/fa6";
 import {
   Link,
-  useLocation,
-  useSearchParams,
+ 
   useNavigate,
 } from "react-router-dom";
 
