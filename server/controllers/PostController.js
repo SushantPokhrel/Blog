@@ -102,6 +102,30 @@ const getPostsByCategory = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const getPostByQuery = async (req, res) => {
+  const { query } = req.query;
+  console.log(query);
+  if (!query || query.trim().length < 3) {
+    return res.status(404).json({ message: "No results found" });
+  }
+  try {
+    // Perform a case-insensitive search on 'title' and 'category'
+    const results = await postSchema.find({
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { category: { $regex: query, $options: "i" } },
+      ],
+    });
+    if (!results.length) {
+      return res.status(404).json({
+        message: "No results found",
+      });
+    }
+    return res.status(200).json(results);
+  } catch (err) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
 
 const likePost = async (req, res) => {
   try {
@@ -155,4 +179,5 @@ module.exports = {
   getPostsByCategory,
   likePost,
   getPostById,
+  getPostByQuery,
 };

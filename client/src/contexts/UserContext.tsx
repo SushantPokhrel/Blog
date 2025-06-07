@@ -4,7 +4,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 type UserTypes = {
   email: string;
   username: string;
-  profilePhoto: string;
+  profilePhoto?: string;
   role: string;
 };
 

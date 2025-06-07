@@ -8,10 +8,15 @@ import PublicRoute from "./routes/Public";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./components/NotFound";
 import UserContextProvider from "./contexts/UserContext";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./pages/Dashboard";
 import UserPost from "./pages/UserPost";
 import Footer from "./components/Footer";
 import ScrollToTop from "./Utilities/ScrollToTop";
+import MyBlogs from "./components/MyBlogs";
+import Profile from "./components/Profile";
+import Users from "./components/Users";
+import Analytics from "./components/Analytics";
+import AllBlogs from "./components/AllBlogs";
 
 function App() {
   return (
@@ -60,9 +65,15 @@ function App() {
                   <Dashboard />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route index element={<Profile />} />
+              <Route path="allusers" element={<Users />} />
+              <Route path="myblogs" element={<MyBlogs />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="allposts" element={<AllBlogs />} />
+            </Route>
 
-            <Route path="*" element={<NotFound children="Home"/>} />
+            <Route path="*" element={<NotFound children="Home" />} />
           </Routes>
           <Footer />
         </BrowserRouter>

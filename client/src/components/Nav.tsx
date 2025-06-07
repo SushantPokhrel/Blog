@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { CiSearch } from "react-icons/ci";
 import { HiMiniBars3 } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io"; // Close icon
 import { FaPenClip } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
+
 import Button from "./Button";
 import { useUserContext } from "../contexts/UserContext";
+import DialogDemo from "./Modal";
 
 const Nav: React.FC = () => {
   const topics = [
@@ -26,6 +32,18 @@ const Nav: React.FC = () => {
   const handleToggleMenu = () => {
     setIsOpen((prev) => !prev);
   };
+  const navigate = useNavigate();
+
+  const handleCategory = (value: string) => {
+    setCategory(value);
+
+    // Build the new URL with the search params you want
+    navigate({
+      pathname: "/", // explicitly navigate to `/`
+    });
+
+    setIsOpen(false);
+  };
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflowY = "hidden";
@@ -41,11 +59,7 @@ const Nav: React.FC = () => {
         </Link>
       </div>
       <div className="flex gap-2 items-center">
-        {isAuthenticated && (
-          <div className="p-2 cursor-pointer active:bg-blue-200  text-gray-500 hover:text-gray-800">
-            <CiSearch className="size-5" />
-          </div>
-        )}
+        {isAuthenticated && <DialogDemo />}
         {isAuthenticated && (
           <Link
             to="/createPost"
@@ -87,8 +101,9 @@ const Nav: React.FC = () => {
         <ul className="space-y-4 ">
           {topics.map((topic, index) => (
             <li
+              onClick={() => handleCategory(topic.toLowerCase())}
               key={index}
-              className={`hover:text-blue-300 cursor-pointer text-gray-700 `}
+              className={`active:bg-blue-300 p-1.5 rounded-sm cursor-pointer text-gray-700 `}
             >
               {topic}
             </li>

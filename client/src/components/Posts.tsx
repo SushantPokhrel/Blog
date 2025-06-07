@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 import { useUserContext } from "../contexts/UserContext";
 import { Link } from "react-router-dom";
 import { PiHandsClappingThin } from "react-icons/pi";
@@ -80,11 +80,11 @@ const Posts: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="md:basis-2/5 basis-1/4  self-center  ">
+            <div className=" basis-1/4  self-center  md:self-start md:basis-2/5 ">
               <img
                 src={post.banner}
                 alt={`Banner for ${post.title}`}
-                className="w-full aspect-square rounded-sm md:aspect-auto"
+                className="w-full aspect-square rounded-sm md:aspect-auto max-h-40"
               />
             </div>
           </div>

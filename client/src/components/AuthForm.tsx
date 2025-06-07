@@ -47,6 +47,7 @@ const AuthForm: React.FC = () => {
         }
       } catch (e: any) {
         console.log(e);
+        console.log("oauth fail");
       }
     },
     onError: (error) => {
@@ -59,6 +60,7 @@ const AuthForm: React.FC = () => {
   // submit the form data
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const payload = login
       ? { email: formData.email, password: formData.password }
       : {
@@ -70,16 +72,55 @@ const AuthForm: React.FC = () => {
     const fullUrl = login
       ? `${backendUrl}/api/auth/login`
       : `${backendUrl}/api/auth/signup`;
-    const response = await fetch(`${fullUrl}`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    console.log(data);
+    try {
+      const response = await fetch(`${fullUrl}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      console.log(data);
+      if (response.status === 201) {
+        setLogin(true);
+      }
+      if (response.status === 409) {
+        alert(data.message);
+        setLogin(true);
+      }
+      // user login success
+      if (login && response.status === 200) {
+        const { username, email, role } = data;
+        setUser({
+          username,
+          email,
+          role,
+        });
+        setIsAuthenticated(true);
+      }
+      // user not found
+      if (response.status === 404) {
+        alert("User not found");
+        setUser({
+          email: "",
+          username: "",
+          profilePhoto: "",
+          role: "",
+        });
+        setIsAuthenticated(false);
+      }
+    } catch (e) {
+      console.log(e);
+      setUser({
+        email: "",
+        username: "",
+        profilePhoto: "",
+        role: "",
+      });
+      setIsAuthenticated(false);
+    }
   };
   // handle change function
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
