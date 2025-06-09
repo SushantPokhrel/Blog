@@ -51,7 +51,7 @@ const Nav: React.FC = () => {
     }
   }, [isOpen]);
   return (
-    <nav className=" flex justify-between p-3 items-center shadow-sm shadow-gray-100 bg-white md:px-6">
+    <nav className=" flex justify-between p-3 sticky top-0 z-40 items-center shadow-sm shadow-gray-100 bg-white md:px-6">
       <div className="flex items-center cursor-pointer logo-name text-lg md:text-xl font-semibold">
         <Link to="/" onClick={() => setCategory("For You")}>
           <span className="text-blue-400">Vibe</span>Write

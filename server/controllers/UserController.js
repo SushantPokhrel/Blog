@@ -143,6 +143,7 @@ const googleController = async (req, res) => {
           username: newUser.username,
           role: newUser.role,
           picture: newUser.picture,
+          customUsername: newUser.customUsername,
         },
         process.env.JWT_SECRET_KEY,
         { expiresIn: "55m" }
@@ -162,6 +163,7 @@ const googleController = async (req, res) => {
         user_id: newUser._id,
         role: newUser.role,
         picture: newUser.picture,
+        customUsername: newUser.customUsername,
       });
     }
 
@@ -172,6 +174,7 @@ const googleController = async (req, res) => {
         username: existingUser.username,
         role: existingUser.role,
         picture: existingUser.picture,
+        customUsername: existingUser.customUsername,
       },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "55m" }
@@ -191,11 +194,28 @@ const googleController = async (req, res) => {
       user_id: existingUser._id,
       role: existingUser.role,
       picture: existingUser.picture,
+      customUsername: existingUser.customUsername,
     });
   } catch (err) {
     console.error(err.response?.data || err.message);
     res.status(500).json({ message: "Google login failed" });
   }
 };
+const logout = async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "unauthorized access" });
+  }
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  });
 
-module.exports = { signupController, loginController, googleController };
+  return res.status(200).json({ message: "Logged out successfully" });
+};
+module.exports = {
+  signupController,
+  loginController,
+  googleController,
+  logout,
+};

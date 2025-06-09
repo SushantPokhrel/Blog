@@ -13,6 +13,6 @@ const PublicRoute = ({ children }: PublicRouteProps) => {
       </div>
     );
   }
-  return isAuthenticated ? <Navigate to="/" replace /> : children;
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 };
 export default PublicRoute;

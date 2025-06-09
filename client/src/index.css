@@ -9,38 +9,70 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
- .scrollbar-none{
-  scroll-behavior: smooth
- }
 
+  .scrollbar-none {
+    scroll-behavior: smooth;
+  }
+  .result::-webkit-scrollbar {
+    width: 8px;
+    scroll-behavior: smooth;
+  }
+  .result::-webkit-scrollbar-track {
+    background-color: rgb(54, 54, 54); /* or just background: #2c2c2c; */
+  }
+  .result::-webkit-scrollbar-thumb {
+    background-color: rgb(78, 78, 78); /* Adjust as you like */
+    border-radius: 6px; /* Optional: for rounded corners */
+  }
+
+  @keyframes scaleIn {
+    0% {
+      transform: scale(0.7);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .scale-in {
+    animation: scaleIn 0.4s ease-in-out;
+  }
   /* ckeditor css  */
   .ck-content h1,
   .post-display h1 {
-    @apply text-3xl font-semibold text-gray-800 my-3;
+    @apply text-3xl font-bold text-gray-800 my-4.5;
   }
   .ck-content h2,
   .post-display h2 {
-    @apply text-2xl font-semibold text-gray-800 my-3;
+    @apply text-2xl font-bold text-gray-800 my-4.5;
   }
   .ck-content h3,
   .post-display h3 {
-    @apply text-xl font-semibold text-gray-800 my-3;
+    @apply text-xl font-bold text-gray-800 my-4.5;
   }
   .ck-editor-container {
     @apply max-w-4xl mx-auto m-4;
   }
-
+  .post-display p,
+  .post-display ol,
+  .post-display ul {
+    @apply font-serif text-xl;
+  }
   .post-display img {
-    @apply block  mx-auto h-auto my-6;
+    @apply block  mx-auto h-auto my-8;
   }
   .post-display a {
     @apply text-sm text-blue-500 underline;
   }
   .post-display p {
-    @apply text-base text-gray-700;
+    @apply text-gray-700  leading-7 md:leading-8;
   }
   .post-display ol {
-    @apply list-inside list-disc;
+    @apply list-inside list-disc text-gray-700 leading-8;
+  }
+  .post-display pre {
+    @apply my-4;
   }
 }
 
@@ -54,18 +86,19 @@
 @media (max-width: 425px) {
   .ck-content h1,
   .post-display h1 {
-    @apply text-2xl font-semibold text-gray-800 my-2;
+    @apply text-2xl  text-gray-800 my-2;
   }
   .ck-content h2,
   .post-display h2 {
-    @apply text-xl font-semibold text-gray-800 my-2;
+    @apply text-xl  text-gray-800 my-2;
   }
   .ck-content h3,
   .post-display h3 {
-    @apply text-lg font-semibold text-gray-800 my-2;
+    @apply text-lg  text-gray-800 my-2;
   }
   .post-display p,
-  .post-display li {
-    @apply text-[14px] text-gray-700;
+  .post-display ul,
+  .post-display ol {
+    @apply text-base text-gray-700;
   }
 }

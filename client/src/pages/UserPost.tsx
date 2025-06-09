@@ -118,10 +118,10 @@ function UserPost() {
     );
 
   return (
-    <div className="wrapper">
+    <div className="wrapper max-w-[700px]!">
       <div className="mb-6 flex flex-col gap-8 m-2 pb-4">
         <div className="flex flex-col gap-3 md:gap-4">
-          <h1 className="text-3xl font-bold text-gray-800 md:text-4xl">
+          <h1 className="text-3xl font-bold text-gray-800 md:text-5xl leading-8 md:leading-none">
             {post.title}
           </h1>
           <h2 className="text-base font-normal text-gray-600 md:text-lg">
@@ -172,7 +172,7 @@ function UserPost() {
 
         <MemoizedContentDisplay
           content={post.content}
-          className="max-w-none post-display"
+          className=" post-display"
         />
         <div className="extra border-b border-b-gray-200 flex justify-between">
           <span

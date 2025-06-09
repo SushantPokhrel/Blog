@@ -32,7 +32,9 @@ app.use(cookieParser());
 // routes
 app.use("/api/auth", userRoutes);
 app.use("/api/posts", postRoutes);
-
+app.get("/", (req, res) => {
+  return res.json({ message: "hi from server" });
+});
 app.listen(PORT, () => {
   console.log("server started ", PORT);
 });

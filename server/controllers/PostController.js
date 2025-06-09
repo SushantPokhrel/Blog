@@ -53,10 +53,11 @@ const createPost = async (req, res) => {
       authorName: username,
     });
 
-    await newPost.save();
+    const savedPost = await newPost.save();
+    console.log(savedPost);
     res
       .status(201)
-      .json({ message: "Post created successfully", post: newPost });
+      .json({ message: "Post created successfully", post: savedPost });
   } catch (error) {
     console.error("Error creating post:", error);
     res.status(500).json({ message: "Failed to create post" });
@@ -65,7 +66,7 @@ const createPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    const posts = await postSchema.find();
+    const posts = await postSchema.find().sort({ createdAt: -1 });
 
     const updatedPosts = posts.map((post) => {
       const obj = post.toObject();
@@ -89,7 +90,7 @@ const getPostsByCategory = async (req, res) => {
   }
 
   try {
-    const posts = await postSchema.find({ category });
+    const posts = await postSchema.find({ category }).sort({ createdAt: -1 });
     const updatedPosts = posts.map((post) => {
       const obj = post.toObject();
       obj.likeCount = post.likes.length;

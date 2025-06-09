@@ -6,6 +6,7 @@ type UserTypes = {
   username: string;
   profilePhoto?: string;
   role: string;
+  customUsername?: string;
 };
 
 type Post = {
@@ -54,6 +55,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
     username: "",
     profilePhoto: "",
     role: "",
+    customUsername: "",
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -84,6 +86,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
           username: "",
           profilePhoto: "",
           role: "",
+          customUsername:""
         });
         return;
       }
@@ -105,6 +108,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
         username: "",
         profilePhoto: "",
         role: "",
+        customUsername:""
       });
     } finally {
       console.log("Auth check finally ran");

@@ -5,7 +5,7 @@ import CreatePost from "./pages/CreatePost";
 import AuthForm from "./components/AuthForm";
 import ProtectedRoute from "./routes/Protected";
 import PublicRoute from "./routes/Public";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import NotFound from "./components/NotFound";
 import UserContextProvider from "./contexts/UserContext";
 import Dashboard from "./pages/Dashboard";
@@ -19,6 +19,8 @@ import Analytics from "./components/Analytics";
 import AllBlogs from "./components/AllBlogs";
 
 function App() {
+  const hiddenFooterPaths = ["/dashboard", "/user/auth"];
+
   return (
     <>
       <UserContextProvider>
@@ -75,7 +77,7 @@ function App() {
 
             <Route path="*" element={<NotFound children="Home" />} />
           </Routes>
-          <Footer />
+          {hiddenFooterPaths.includes(location.pathname) ? null : <Footer />}
         </BrowserRouter>
       </UserContextProvider>
     </>

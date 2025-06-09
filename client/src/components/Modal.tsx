@@ -85,10 +85,10 @@ const DialogDemo = () => {
         </div>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="DialogOverlay fixed inset-0 bg-gray-600/50" />
+        <Dialog.Overlay className="DialogOverlay fixed z-[55] inset-0 bg-gray-600/60" />
         <Dialog.Content
           onOpenAutoFocus={triggerFocus}
-          className="DialogContent flex flex-col gap-4 bg-gray-800 text-white  w-full max-w-xs p-4 rounded-md fixed  left-1/2 top-1/3  -translate-x-1/2 md:top-1/4 md:max-w-xl"
+          className="DialogContent flex  flex-col gap-4  bg-gray-800 text-white  w-full max-w-xs p-4 rounded-md fixed z-[60] left-1/2 top-1/3  -translate-x-1/2 md:top-1/4 md:max-w-xl"
         >
           <Dialog.Title className="DialogTitle text-base font-semibold flex justify-between">
             <p> Search a Post</p>
@@ -109,15 +109,14 @@ const DialogDemo = () => {
               value={query}
             />
           </fieldset>
-          <div className="result text-sm">
+          <div className="result text-sm  max-h-32 overflow-y-auto">
             {loading ? (
               <p>Loading...</p>
             ) : isFound ? (
               searchedPosts?.map((post) => (
-                <Dialog.Close asChild>
+                <Dialog.Close asChild key={post._id}>
                   <Link
                     to={`/post/${post._id}`}
-                    key={post._id}
                     className="cursor-pointer mt-2.5 p-3 line-clamp-2 shadow-sm shadow-gray-600 rounded-md active:bg-gray-600 hover:bg-gray-500 transition-all"
                   >
                     {post.title}

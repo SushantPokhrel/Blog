@@ -3,6 +3,7 @@ import { IoMdClose } from "react-icons/io"; // Close icon
 import Button from "../components/Button";
 import Editor from "../components/Editor";
 import DropdownMenuDemo from "../components/Dropdown";
+import { useNavigate } from "react-router-dom";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const MAX_FILE_SIZE_MB = 1; // 1MB limit
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -140,8 +141,7 @@ const CreatePost: React.FC = () => {
     ],
   };
 
-  console.log(topicTags["Web Development"]);
-
+  const navigate = useNavigate();
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [base64Img, setBase64Img] = useState("");
@@ -198,7 +198,10 @@ const CreatePost: React.FC = () => {
 
       if (res.ok) {
         alert("Post submitted successfully!");
-        console.log(res);
+        const {post} = await res.json();
+
+        console.log(post);
+        navigate(`/post/${post._id}`);
       } else {
         alert("Failed to submit post.");
       }
@@ -214,9 +217,7 @@ const CreatePost: React.FC = () => {
     setTags((prev) => prev.filter((t) => t != tag));
     return;
   };
-  useEffect(() => {
-    console.log(tags);
-  }, [tags]);
+ 
   return (
     <div className="wrapper ">
       <h1 className="text-2xl font-extrabold text-gray-800 mb-8 text-center">
@@ -333,18 +334,7 @@ const CreatePost: React.FC = () => {
             Add Tags
           </label>
           <div className="tags flex gap-2 flex-wrap">
-            {/* {topics.map((topic) => (
-              <Button
-                key={topic}
-                onClick={(e) => handleTags(e, topic)}
-                children={topic}
-                className={`   hover:bg-blue-700 hover:text-white cursor-pointer   text-[12px] px-3 py-2 border rounded-3xl ${
-                  tags.includes(topic)
-                    ? "bg-blue-600 text-white"
-                    : "bg-white  text-black"
-                }`}
-              />
-            ))} */}
+           
             {topicTags[category].map((tag) => (
               <Button
                 key={tag}
