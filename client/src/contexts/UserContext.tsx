@@ -92,12 +92,14 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
       }
 
       const data = await response.json();
-      const { email, username, picture, role } = data.user;
+      console.log(data)
+      const { email, username, picture, role,customUsername } = data.user;
       setUser({
         email,
         username,
         profilePhoto: picture,
         role,
+        customUsername
       });
       setIsAuthenticated(true);
     } catch (e) {

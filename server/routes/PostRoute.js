@@ -9,6 +9,6 @@ router.get("/", verifyToken, postsController.getPostsByCategory);
 router.post("/liked/:id", verifyToken, postsController.likePost);
 router.get("/search", verifyToken, postsController.getPostByQuery);
 router.get("/:id", verifyToken, postsController.getPostById);
-
+router.get("/author/:authorName", verifyToken, postsController.getPostsByAuthor);
 
 module.exports = router;

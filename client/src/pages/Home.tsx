@@ -20,6 +20,7 @@ function Home() {
       {posts.length ? <Posts /> : <NotFound children="Write a Post" />}
       <div className="flex justify-center">
         <Button
+          onClick={() => alert("Unexpected error occurred")}
           children={"Load more"}
           className="bg-blue-600 hover:bg-blue-700 active:bg-blue-500 text-white font-semibold text-sm px-5 py-2.5 rounded-md"
         />

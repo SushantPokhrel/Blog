@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io"; // Close icon
 import Button from "../components/Button";
 import Editor from "../components/Editor";

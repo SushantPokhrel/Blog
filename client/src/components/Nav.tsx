@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HiMiniBars3 } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io"; // Close icon
 import { FaPenClip } from "react-icons/fa6";
-import {
-  Link,
- 
-  useNavigate,
-} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Button from "./Button";
 import { useUserContext } from "../contexts/UserContext";
@@ -75,6 +71,14 @@ const Nav: React.FC = () => {
             <HiMiniBars3 className="size-5" />
           </div>
         )}
+        {isAuthenticated && (
+          <Link to="/dashboard" onClick={() => setIsOpen(false)} className="hidden md:inline-block">
+            <Button
+              children="Profile"
+              className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white text-sm active:bg-blue-600"
+            />
+          </Link>
+        )}
       </div>
       {/* nav links menu  && overlay*/}
       {isOpen && (
@@ -109,9 +113,21 @@ const Nav: React.FC = () => {
           ))}
         </ul>
         {isAuthenticated ? (
-          <Link to="/" onClick={() => setIsOpen(false)}>
-            Home
-          </Link>
+          <div className="flex justify-between ">
+            {" "}
+            <Link to="/" onClick={() => setIsOpen(false)}>
+              <Button
+                children="Home"
+                className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white active:bg-blue-600"
+              />
+            </Link>
+            <Link to="/dashboard" onClick={() => setIsOpen(false)}>
+              <Button
+                children="Profile"
+                className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white active:bg-blue-600"
+              />
+            </Link>
+          </div>
         ) : (
           <div className="buttons">
             <Link to="/user/auth">

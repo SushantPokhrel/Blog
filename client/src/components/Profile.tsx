@@ -3,17 +3,24 @@ import { useUserContext } from "../contexts/UserContext";
 import Loader from "./Loader";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
-
+const MAX_FILE_SIZE_MB = 1; // 1MB limit
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { user, setUser, setIsAuthenticated } = useUserContext();
-  const [loading, setLoading] = useState(false);
-  const [newUsername, setNewUsername] = useState(user.customUsername||user.username);
 
+  // Separate loading states
+  const [savingUsername, setSavingUsername] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [profileImg, setProfileImg] = useState(false);
+  const [newUsername, setNewUsername] = useState(
+    user.customUsername || user.username
+  );
+  //logout handler
   const handleLogout = async () => {
-    setLoading(true);
+    setLoggingOut(true);
     try {
       const res = await fetch(`${backendUrl}/api/auth/logout`, {
         method: "POST",
@@ -29,23 +36,23 @@ const Profile: React.FC = () => {
         });
         alert("User logged out successfully");
         navigate("/user/auth");
-        return;
+      } else {
+        alert("Failed logging out, try again");
       }
     } catch (e) {
       console.log(e);
       alert("Failed logging out, try again");
     } finally {
-      setLoading(false);
+      setLoggingOut(false);
     }
   };
-
+  //username update handler
   const handleUsernameUpdate = async () => {
     if (!newUsername.trim()) {
       alert("Username cannot be empty.");
       return;
     }
-
-    setLoading(true);
+    setSavingUsername(true);
     try {
       const res = await fetch(`${backendUrl}/api/auth/user/${user.email}`, {
         method: "PATCH",
@@ -71,10 +78,46 @@ const Profile: React.FC = () => {
       console.error("Error updating username:", error);
       alert("An error occurred. Please try again.");
     } finally {
-      setLoading(false);
+      setSavingUsername(false);
     }
   };
+  // profile-img handler
+  const handleProfileImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    if (e.target.files?.[0].size > MAX_FILE_SIZE_BYTES) {
+      alert("Image size must be less than 1mb");
+      return;
+    }
+    const file = e.target.files?.[0];
+    console.log(file);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const result = reader.result as string;
+      try {
+        const response = await fetch(`${backendUrl}/api/auth/user/profileImg`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
+          body: JSON.stringify({
+            profileImg: result,
+          }),
+        });
+        const data = await response.json();
+        console.log(data);
+        setUser((prev) => ({
+          ...prev,
+          profilePhoto: data.image,
+        }));
+      } catch (e) {
+        console.log(e);
+        alert("Network error, Try again");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
   if (!user.email) {
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -88,11 +131,15 @@ const Profile: React.FC = () => {
       <div className="flex flex-col md:flex-row items-center md:space-x-6">
         <div className="flex-shrink-0 mb-4 md:mb-0">
           <img
-            src={user.profilePhoto}
-            alt={`${user.username}'s profile`}
-            className="w-100% h-auto object-cover rounded-full border-2 border-black"
+            src={
+              user.profilePhoto ||
+              "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
+            }
+            alt="profile"
+            className="text-center  w-32 h-32 text-xs italic object-cover rounded-full border-2 border-blue-600"
           />
         </div>
+
         <div className="flex-1 text-center md:text-left">
           <h2 className="text-2xl font-bold text-gray-800">
             {user.customUsername || user.username}
@@ -106,28 +153,13 @@ const Profile: React.FC = () => {
 
       <div className="mt-6 border-t border-gray-200 pt-4">
         <h3 className="font-semibold text-gray-700 mb-2">
-          Hello {user.username.split(" ")[0]}
+          Hello {user.customUsername || user.username.split(" ")[0]}
         </h3>
         <p className="text-gray-600 text-sm">
           Welcome to your profile page! Here you can view and manage your
           personal information. We aim to ensure your data is always secure and
           up to date.
         </p>
-      </div>
-
-      <div className="mt-6 flex justify-center space-x-3">
-        <Button
-          className="px-4 text-xs py-2 bg-blue-500 text-white active:bg-blue-600 hover:bg-blue-400"
-          onClick={handleUsernameUpdate}
-        >
-          {loading ? "Saving..." : "Save Username"}
-        </Button>
-        <Button
-          onClick={handleLogout}
-          className="px-4 text-xs py-2 bg-red-500 text-white active:bg-red-600 hover:bg-red-400"
-        >
-          {loading ? "Logging out..." : "Log Out"}
-        </Button>
       </div>
 
       {/* Edit profile */}
@@ -137,23 +169,34 @@ const Profile: React.FC = () => {
             Edit Username
           </legend>
           <div className="mt-2">
-            <label
-              htmlFor="username"
-              className="block text-xs font-medium text-gray-600"
-            >
-              Username
-            </label>
             <input
               type="text"
               id="username"
               name="username"
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
-              className="mt-1 block w-full rounded-sm text-sm border-b border-b-gray-400 focus:outline-blue-500 focus:ring-blue-500 p-2"
+              className="mt-1 block w-full bg-gray-100 rounded-sm text-sm  focus:outline-blue-500 p-3"
               placeholder="Enter your username"
             />
           </div>
         </fieldset>
+      </div>
+      {/* Edit buttons */}
+      <div className="mt-6 flex justify-center space-x-3">
+        <Button
+          className="px-4 text-xs py-2 bg-blue-500 text-white active:bg-blue-600 hover:bg-blue-400"
+          onClick={handleUsernameUpdate}
+          disabled={savingUsername}
+        >
+          {savingUsername ? "Saving..." : "Save Username"}
+        </Button>
+        <Button
+          onClick={handleLogout}
+          className="px-4 text-xs py-2 bg-red-500 text-white active:bg-red-600 hover:bg-red-400"
+          disabled={loggingOut}
+        >
+          {loggingOut ? "Logging out..." : "Log Out"}
+        </Button>
       </div>
     </div>
   );

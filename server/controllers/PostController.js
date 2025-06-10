@@ -127,7 +127,19 @@ const getPostByQuery = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
-
+// posts by author
+const getPostsByAuthor = async (req, res) => {
+  const { authorName} = req.params;
+  const posts = await postSchema
+    .find({ authorName: authorName })
+    .sort({ createdAt: -1 });
+  if (!posts.length)
+    return res.status(404).json({
+      message: "No posts found",
+    });
+  return res.status(200).json(posts);
+};
+// like a post
 const likePost = async (req, res) => {
   try {
     const { id } = req.params;
@@ -181,4 +193,5 @@ module.exports = {
   likePost,
   getPostById,
   getPostByQuery,
+  getPostsByAuthor,
 };

@@ -17,71 +17,81 @@ import Profile from "./components/Profile";
 import Users from "./components/Users";
 import Analytics from "./components/Analytics";
 import AllBlogs from "./components/AllBlogs";
+import { useEffect, useState } from "react";
 
 function App() {
-  const hiddenFooterPaths = ["/dashboard", "/user/auth"];
-
   return (
     <>
       <UserContextProvider>
         <BrowserRouter>
           <ScrollToTop />
           <Nav />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Home />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/post/:id"
-              element={
-                <ProtectedRoute>
-                  <UserPost />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/user/auth"
-              element={
-                <PublicRoute>
-                  <AuthForm />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/createPost"
-              element={
-                <ProtectedRoute>
-                  <CreatePost />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Profile />} />
-              <Route path="allusers" element={<Users />} />
-              <Route path="myblogs" element={<MyBlogs />} />
-              <Route path="analytics" element={<Analytics />} />
-              <Route path="allposts" element={<AllBlogs />} />
-            </Route>
-
-            <Route path="*" element={<NotFound children="Home" />} />
-          </Routes>
-          {hiddenFooterPaths.includes(location.pathname) ? null : <Footer />}
+          <AppRoutes />
         </BrowserRouter>
       </UserContextProvider>
     </>
   );
 }
+const AppRoutes = () => {
+  const location = useLocation();
+  const [renderFooter, setRenderFooter] = useState(true);
+  const hiddenFooterPaths = ["/dashboard", "/user/auth"];
 
+  console.log(location.pathname);
+  return (
+    <>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/post/:id"
+          element={
+            <ProtectedRoute>
+              <UserPost />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/auth"
+          element={
+            <PublicRoute>
+              <AuthForm />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/createPost"
+          element={
+            <ProtectedRoute>
+              <CreatePost />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Profile />} />
+          <Route path="allusers" element={<Users />} />
+          <Route path="myblogs" element={<MyBlogs />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="allposts" element={<AllBlogs />} />
+        </Route>
+
+        <Route path="*" element={<NotFound children="Home" />} />
+      </Routes>
+      {location.pathname.startsWith("/dashboard") ? null : <Footer />}
+    </>
+  );
+};
 export default App;

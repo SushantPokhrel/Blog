@@ -87,7 +87,7 @@ const Dashboard: React.FC = () => {
           </span>
         </div>
         {/* Main content area */}
-        <div className="py-8">
+        <div className="py-8 px-3">
           <Outlet />
         </div>
         <Footer />

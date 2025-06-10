@@ -35,19 +35,20 @@ const AuthForm: React.FC = () => {
         const data = await response.json();
         console.log(data);
         if (response.status === 200 || response.status === 201) {
-          const { username, email, picture, role } = data;
+          const { username, email, picture, role ,customUsername} = data;
 
           setUser({
             username,
             email,
             profilePhoto: picture,
             role,
+            customUsername
           });
           setIsAuthenticated(true);
         }
-      } catch (e: any) {
-        console.log(e);
+      } catch (e) {
         console.log("oauth fail");
+      alert("Google Login failed, Try again");
       }
     },
     onError: (error) => {
