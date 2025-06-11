@@ -4,11 +4,14 @@ dotenv.config({ path: ".env.development" });
 
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+
 const db = require("./DatabaseConnection");
 const userRoutes = require("./routes/UserRoute");
 const postRoutes = require("./routes/PostRoute");
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use("/uploads", express.static("uploads"));
+
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,

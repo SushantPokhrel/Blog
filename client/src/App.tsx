@@ -17,7 +17,6 @@ import Profile from "./components/Profile";
 import Users from "./components/Users";
 import Analytics from "./components/Analytics";
 import AllBlogs from "./components/AllBlogs";
-import { useEffect, useState } from "react";
 
 function App() {
   return (
@@ -34,8 +33,7 @@ function App() {
 }
 const AppRoutes = () => {
   const location = useLocation();
-  const [renderFooter, setRenderFooter] = useState(true);
-  const hiddenFooterPaths = ["/dashboard", "/user/auth"];
+
 
   console.log(location.pathname);
   return (

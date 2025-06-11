@@ -121,7 +121,7 @@ const googleController = async (req, res) => {
 
     const payload = ticket.getPayload();
     const { email, name, picture, sub: googleId } = payload;
-
+    console.log(picture);
     let existingUser = await USER.findOne({ email });
 
     if (!existingUser) {
@@ -201,6 +201,92 @@ const googleController = async (req, res) => {
     res.status(500).json({ message: "Google login failed" });
   }
 };
+
+const updateProfileImgController = async (req, res) => {
+  try {
+    const { email } = req.user;
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const profileImg = `${process.env.BACKEND_URL}/uploads/${req.file.filename}`;
+
+    const user = await USER.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.picture = profileImg;
+    const updatedUser = await user.save();
+
+    const token = jwt.sign(
+      {
+        user_id: updatedUser._id,
+        email: updatedUser.email,
+        username: updatedUser.username,
+        role: updatedUser.role,
+        picture: updatedUser.picture,
+        customUsername: updatedUser.customUsername,
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "55m" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 3600000, // 1 hour
+    });
+
+    return res.status(200).json({
+      message: "Updated profile image successfully",
+      image: profileImg,
+    });
+  } catch (error) {
+    console.error("Error updating profile image:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+const updateUsernameController = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const { username } = req.body;
+
+    const user = await USER.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.customUsername = username;
+    const updatedUser = await user.save();
+
+    const token = jwt.sign(
+      {
+        user_id: updatedUser._id,
+        email: updatedUser.email,
+        username: updatedUser.username,
+        role: updatedUser.role,
+        picture: updatedUser.picture,
+        customUsername: updatedUser.customUsername,
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "55m" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 3600000,
+    });
+
+    return res.status(200).json({
+      customUsername: username,
+    });
+  } catch (error) {
+    console.error("Error updating username:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
 const logout = async (req, res) => {
   if (!req.user) {
     return res.status(401).json({ message: "unauthorized access" });
@@ -217,5 +303,7 @@ module.exports = {
   signupController,
   loginController,
   googleController,
+  updateProfileImgController,
+  updateUsernameController,
   logout,
 };

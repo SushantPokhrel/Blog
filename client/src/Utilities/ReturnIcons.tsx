@@ -1,4 +1,3 @@
-import type React from "react";
 import type { IconType } from "react-icons/lib";
 import {
   MdPersonOutline,

@@ -14,7 +14,7 @@ const Profile: React.FC = () => {
   // Separate loading states
   const [savingUsername, setSavingUsername] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
-  const [profileImg, setProfileImg] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [newUsername, setNewUsername] = useState(
     user.customUsername || user.username
   );
@@ -83,6 +83,7 @@ const Profile: React.FC = () => {
   };
   // profile-img handler
   const handleProfileImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUploadingImage(true);
     if (!e.target.files) return;
     if (e.target.files?.[0].size > MAX_FILE_SIZE_BYTES) {
       alert("Image size must be less than 1mb");
@@ -90,33 +91,31 @@ const Profile: React.FC = () => {
     }
     const file = e.target.files?.[0];
     console.log(file);
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const result = reader.result as string;
-      try {
-        const response = await fetch(`${backendUrl}/api/auth/user/profileImg`, {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({
-            profileImg: result,
-          }),
-        });
-        const data = await response.json();
-        console.log(data);
-        setUser((prev) => ({
-          ...prev,
-          profilePhoto: data.image,
-        }));
-      } catch (e) {
-        console.log(e);
-        alert("Network error, Try again");
+    const formData = new FormData();
+    formData.append("profile-img", file);
+    try {
+      const response = await fetch(`${backendUrl}/api/auth/user/profileImg`, {
+        method: "PATCH",
+        credentials: "include",
+        body: formData,
+      });
+      console.log(response);
+      if (!response.ok) {
+        alert("Could not upload image,Try again");
+        return;
       }
-    };
-    reader.readAsDataURL(file);
+      const data = await response.json();
+      setUser((prev) => ({
+        ...prev,
+        profilePhoto: data.image,
+      }));
+      console.log(data.image);
+    } catch (e) {
+      console.log(e);
+      alert("Image upload failed");
+    } finally {
+      setUploadingImage(false);
+    }
   };
   if (!user.email) {
     return (
@@ -129,17 +128,34 @@ const Profile: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto px-4">
       <div className="flex flex-col md:flex-row items-center md:space-x-6">
-        <div className="flex-shrink-0 mb-4 md:mb-0">
-          <img
-            src={
-              user.profilePhoto ||
-              "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
-            }
-            alt="profile"
-            className="text-center  w-32 h-32 text-xs italic object-cover rounded-full border-2 border-blue-600"
-          />
+        <div className="flex-shrink-0 mb-4 md:mb-0  ">
+          {uploadingImage ? (
+            <Loader />
+          ) : (
+            <label
+              htmlFor="profile-img"
+              onClick={() => console.log("hi")}
+              className="cursor-pointer "
+            >
+              <img
+                src={
+                  user.profilePhoto ||
+                  "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
+                }
+                alt="profile"
+                className="text-center  hover:opacity-75 active:opacity-75 w-32 h-32 text-xs italic object-cover rounded-full border-2 border-blue-600"
+              />
+            </label>
+          )}
         </div>
-
+        <input
+          type="file"
+          className="hidden"
+          name="profile-img"
+          id="profile-img"
+          onChange={handleProfileImg}
+          accept="image/*"
+        />
         <div className="flex-1 text-center md:text-left">
           <h2 className="text-2xl font-bold text-gray-800">
             {user.customUsername || user.username}
