@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useUserContext } from "../contexts/UserContext";
@@ -12,6 +12,8 @@ type FormDataTypes = {
 };
 const AuthForm: React.FC = () => {
   const [login, setLogin] = useState(true);
+  const [processingDefault, setProcessingDefault] = useState(false);
+  const [processingGoogle, setProcessingGoogle] = useState(false);
   const [formData, setFormData] = useState<FormDataTypes>({
     username: "",
     email: "",
@@ -19,49 +21,51 @@ const AuthForm: React.FC = () => {
   });
   const { setIsAuthenticated, setUser } = useUserContext();
   const focusRef = useRef<HTMLButtonElement | null>(null);
+
   // google login function
   const googleLogin = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
+      setProcessingGoogle(true);
       try {
         const response = await fetch(`${backendUrl}/api/auth/google`, {
           method: "POST",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code: credentialResponse.code }),
         });
-        console.log(response);
         const data = await response.json();
-        console.log(data);
-        if (response.status === 200 || response.status === 201) {
-          const { username, email, picture, role ,customUsername} = data;
-
+        if (response.ok) {
+          const { username, email, picture, role, customUsername } = data;
           setUser({
             username,
             email,
             profilePhoto: picture,
             role,
-            customUsername
+            customUsername,
           });
           setIsAuthenticated(true);
+          console.log(picture);
+        } else {
+          alert("Google Login failed, Try again");
         }
-      } catch (e) {
-        console.log("oauth fail");
-      alert("Google Login failed, Try again");
+      } catch {
+        alert("Google Login failed, Try again");
+      } finally {
+        setProcessingGoogle(false);
       }
     },
-    onError: (error) => {
-      console.error("Google login error:", error);
+    onError: () => {
       alert("Google Login failed, Try again");
+      setProcessingGoogle(false);
     },
-    flow: "auth-code", //  'auth-code' for server-side exchange logic
+    flow: "auth-code",
     redirect_uri: oauthRedirectUrl,
   });
-  // submit the form data
+
+  // handle submit
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setProcessingDefault(true);
     const payload = login
       ? { email: formData.email, password: formData.password }
       : {
@@ -77,31 +81,26 @@ const AuthForm: React.FC = () => {
       const response = await fetch(`${fullUrl}`, {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = await response.json();
-      console.log(data);
-      if (response.status === 201) {
-        setLogin(true);
-      }
+      if (response.status === 201) setLogin(true);
       if (response.status === 409) {
         alert(data.message);
         setLogin(true);
       }
-      // user login success
       if (login && response.status === 200) {
-        const { username, email, role } = data;
+        const { username, email, role, customUsername, picture } = data;
         setUser({
           username,
           email,
           role,
+          customUsername,
+          profilePhoto: picture,
         });
         setIsAuthenticated(true);
       }
-      // user not found
       if (response.status === 404) {
         alert("User not found");
         setUser({
@@ -109,36 +108,30 @@ const AuthForm: React.FC = () => {
           username: "",
           profilePhoto: "",
           role: "",
+          customUsername: "",
         });
         setIsAuthenticated(false);
       }
-    } catch (e) {
-      console.log(e);
+    } catch {
       setUser({
         email: "",
         username: "",
         profilePhoto: "",
         role: "",
+        customUsername: "",
       });
       setIsAuthenticated(false);
+    } finally {
+      setProcessingDefault(false);
     }
   };
-  // handle change function
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  // toggle auth mode
-  const toggleAuthMode = () => {
-    setLogin((prev) => !prev);
-  };
-  useEffect(() => {
-    if (focusRef.current) {
-      focusRef.current.focus();
-    }
-  }, []);
+
+  const toggleAuthMode = () => setLogin((prev) => !prev);
+
   return (
     <div className="form-container wrapper">
       <form
@@ -191,29 +184,78 @@ const AuthForm: React.FC = () => {
           />
         </div>
 
-        <div>
-          <Button
-            children={login ? "Login" : "Sign Up"}
-            className="bg-blue-600 w-full text-sm text-white py-2 px-1.5 hover:bg-blue-700"
-            type="submit"
-          />
-        </div>
-        {/* //google auth */}
-        <div className="goggleAuth text-sm text-center font-semibold ">
+        <Button
+          className="bg-blue-600 w-full text-sm text-white py-2 px-1.5 hover:bg-blue-700 flex justify-center items-center"
+          type="submit"
+          disabled={processingDefault || processingGoogle}
+        >
+          {processingDefault && (
+            <svg
+              className="animate-spin mr-2 h-5 w-5 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+          )}
+          {login ? "Login" : "Sign Up"}
+        </Button>
+
+        {/* Google Auth */}
+        <div className="goggleAuth text-sm text-center font-semibold">
           <div className="flex justify-center items-center gap-1">
-            <div className=" border-t border-gray-500 flex-1"></div>{" "}
-            <p className="">or</p>
-            <div className=" border-t border-gray-500 flex-1"></div>
+            <div className="border-t border-gray-500 flex-1"></div>
+            <p>or</p>
+            <div className="border-t border-gray-500 flex-1"></div>
           </div>
           <Button
             ref={focusRef}
-            onClick={googleLogin}
-            className={`flex w-full p-2  active:bg-blue-300 focus:outline-blue-600   hover:bg-blue-100 justify-center gap-2 text-gray-700 cursor-pointer`}
+            onClick={() => !processingGoogle && googleLogin()}
+            className="flex w-full p-2 active:bg-blue-300 focus:outline-blue-600 hover:bg-blue-100 justify-center gap-2 text-gray-700 cursor-pointer items-center"
+            disabled={processingDefault || processingGoogle}
           >
-            <FcGoogle className="size-5" /> <span>Continue with Google</span>
+            {processingGoogle ? (
+              <svg
+                className="animate-spin mr-2 h-5 w-5 text-gray-600"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+            ) : (
+              <FcGoogle className="size-5" />
+            )}
+            <span>
+              {processingGoogle ? "Processing…" : "Continue with Google"}
+            </span>
           </Button>
         </div>
-        <div className="text-sm text-center font-semibold ">
+
+        <div className="text-sm text-center font-semibold">
           {login ? (
             <>
               <span className="text-gray-700">Don't have an account? </span>
@@ -226,7 +268,7 @@ const AuthForm: React.FC = () => {
             </>
           ) : (
             <>
-              <span className="text-gray-700"> Already have an account? </span>
+              <span className="text-gray-700">Already have an account? </span>
               <Button
                 className="text-blue-600 font-sm underline"
                 onClick={toggleAuthMode}

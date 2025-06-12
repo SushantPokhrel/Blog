@@ -17,6 +17,7 @@ import Profile from "./components/Profile";
 import Users from "./components/Users";
 import Analytics from "./components/Analytics";
 import AllBlogs from "./components/AllBlogs";
+import EditPost from "./pages/Edit";
 
 function App() {
   return (
@@ -33,7 +34,6 @@ function App() {
 }
 const AppRoutes = () => {
   const location = useLocation();
-
 
   console.log(location.pathname);
   return (
@@ -68,6 +68,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <CreatePost />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editPost/:postId"
+          element={
+            <ProtectedRoute>
+              <EditPost />
             </ProtectedRoute>
           }
         />

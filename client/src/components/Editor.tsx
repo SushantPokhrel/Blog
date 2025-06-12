@@ -30,11 +30,13 @@ import {
 } from "ckeditor5";
 type EditorProps = {
   handleContent: (event:any, editor: any) => void;
+  initialData?:string
 };
-const Editor: React.FC<EditorProps> = ({ handleContent }) => {
+const Editor: React.FC<EditorProps> = ({ handleContent,initialData }) => {
   return (
     <div>
       <CKEditor
+         data={initialData}
         editor={ClassicEditor}
         onChange={handleContent}
         config={{

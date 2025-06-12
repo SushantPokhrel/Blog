@@ -18,5 +18,5 @@ const iconsMap: { [key: string]: IconType } = {
 export const returnIcons = (name: string) => {
   const IconComponent = iconsMap[name];
   if (!IconComponent) return null;
-  return <IconComponent className="size-5"/>;
+  return <IconComponent className="size-5 md:size-6"/>;
 };

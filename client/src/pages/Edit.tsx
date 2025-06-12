@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io"; // Close icon
 import Button from "../components/Button";
 import Editor from "../components/Editor";
 import DropdownMenuDemo from "../components/Dropdown";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import { topicTags } from "../Utilities/TopicsTags";
-
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const MAX_FILE_SIZE_MB = 1; // 1MB limit
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -33,21 +32,9 @@ type CategoryTypes =
   | "Blockchain"
   | "Internet of Things (IoT)"
   | "UI/UX Design";
-const CreatePost: React.FC = () => {
-  // const topics = [
-  //   "Web Development",
-  //   "App Development",
-  //   "AI/ML",
-  //   "Cyber Security",
-  //   "Cloud Computing",
-  //   "Data Science",
-  //   "DevOps",
-  //   "Blockchain",
-  //   "Internet of Things (IoT)",
-  //   "UI/UX Design",
-  // ];
-
+const EditPost: React.FC = () => {
   const navigate = useNavigate();
+  const { postId } = useParams();
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [base64Img, setBase64Img] = useState("");
@@ -55,6 +42,7 @@ const CreatePost: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [category, setCategory] = useState<CategoryTypes>("Web Development");
   const [subTitle, setSubTitle] = useState("");
+  const [authorName, setAuthorName] = useState("");
   const handleContent = (_: any, editor: any) => {
     setContent(editor.getData().trim());
   };
@@ -93,8 +81,8 @@ const CreatePost: React.FC = () => {
       return;
     }
     try {
-      const res = await fetch(`${backendUrl}/api/posts`, {
-        method: "POST",
+      const res = await fetch(`${backendUrl}/api/posts/edit/${postId}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -103,7 +91,7 @@ const CreatePost: React.FC = () => {
       });
 
       if (res.ok) {
-        alert("Post submitted successfully!");
+        alert("Post updated successfully!");
         const { post } = await res.json();
 
         console.log(post);
@@ -123,11 +111,30 @@ const CreatePost: React.FC = () => {
     setTags((prev) => prev.filter((t) => t != tag));
     return;
   };
-  
+  const handleGetEditingPost = async () => {
+    const response = await fetch(`${backendUrl}/api/posts/${postId}`, {
+      credentials: "include",
+    });
+    const data = await response.json();
+    console.log(data);
+    const { title, subTitle, tags, content, category, banner, authorName } =
+      data;
+    setBase64Img(banner);
+    setTitle(title);
+    setSubTitle(subTitle);
+    setTags(tags);
+    setContent(content);
+    setCategory(category);
+    setAuthorName(authorName);
+  };
+  useEffect(() => {
+    handleGetEditingPost();
+  }, []);
   return (
     <div className="wrapper ">
-      <h1 className="text-2xl font-extrabold text-gray-800 mb-8 text-center">
-        Create a New Post
+      <h1 className="text-2xl flex justify-between items-center font-extrabold text-gray-800 mb-8 text-center">
+        <span> Edit Your Post</span>{" "}
+        <span className="text-sm font-normal">{authorName}</span>
       </h1>
 
       <div className="space-y-6 flex flex-col gap-2">
@@ -271,7 +278,7 @@ const CreatePost: React.FC = () => {
             Content
           </label>
           <div className="bg-white border border-gray-300 rounded-lg p-2">
-            <Editor handleContent={handleContent} />
+            <Editor handleContent={handleContent} initialData={content} />
           </div>
         </div>
 
@@ -281,7 +288,7 @@ const CreatePost: React.FC = () => {
             onClick={handleSubmit}
             className="bg-blue-600 hover:bg-blue-700 active:bg-blue-500 text-white font-semibold text-sm px-5 py-2.5 rounded-md"
           >
-            Submit Post
+            Edit Post
           </Button>
         </div>
       </div>
@@ -289,4 +296,4 @@ const CreatePost: React.FC = () => {
   );
 };
 
-export default CreatePost;
+export default EditPost;

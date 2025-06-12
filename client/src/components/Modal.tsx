@@ -32,15 +32,18 @@ const DialogDemo = () => {
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setQuery(value);
+    setQuery(value); 
+    // basic validation
     if (e.target.value.trim() === "") {
       return;
     }
     if (idRef.current) {
-      clearTimeout(idRef.current);
+      clearTimeout(idRef.current); // clearing previous timeout delay
     }
     setLoading(true);
     console.log(e.target.value);
+    // this will allow execution of the api call only after 300ms of each key press
+    // this helps in reducing api call on every key press which causes performance issues
     idRef.current = setTimeout(() => {
       fetch(`${backendUrl}/api/posts/search?query=${value}`, {
         credentials: "include",
@@ -66,7 +69,7 @@ const DialogDemo = () => {
         .finally(() => {
           setLoading(false);
         });
-    }, 300); // 300ms d
+    }, 300); // 300ms debouncing
   };
   return (
     <Dialog.Root
@@ -80,7 +83,7 @@ const DialogDemo = () => {
       }}
     >
       <Dialog.Trigger asChild>
-        <div className="p-2 cursor-pointer active:bg-blue-200  text-gray-500 hover:text-gray-800">
+        <div className="p-2 cursor-pointer active:bg-blue-200  rounded-sm text-gray-500 hover:text-gray-800">
           <CiSearch className="size-5" />
         </div>
       </Dialog.Trigger>

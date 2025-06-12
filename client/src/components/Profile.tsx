@@ -3,6 +3,7 @@ import { useUserContext } from "../contexts/UserContext";
 import Loader from "./Loader";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
+
 const MAX_FILE_SIZE_MB = 1; // 1MB limit
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -11,14 +12,13 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { user, setUser, setIsAuthenticated } = useUserContext();
 
-  // Separate loading states
   const [savingUsername, setSavingUsername] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [newUsername, setNewUsername] = useState(
     user.customUsername || user.username
   );
-  //logout handler
+
   const handleLogout = async () => {
     setLoggingOut(true);
     try {
@@ -46,7 +46,7 @@ const Profile: React.FC = () => {
       setLoggingOut(false);
     }
   };
-  //username update handler
+
   const handleUsernameUpdate = async () => {
     if (!newUsername.trim()) {
       alert("Username cannot be empty.");
@@ -81,7 +81,7 @@ const Profile: React.FC = () => {
       setSavingUsername(false);
     }
   };
-  // profile-img handler
+
   const handleProfileImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setUploadingImage(true);
     if (!e.target.files) return;
@@ -90,7 +90,6 @@ const Profile: React.FC = () => {
       return;
     }
     const file = e.target.files?.[0];
-    console.log(file);
     const formData = new FormData();
     formData.append("profile-img", file);
     try {
@@ -99,9 +98,8 @@ const Profile: React.FC = () => {
         credentials: "include",
         body: formData,
       });
-      console.log(response);
       if (!response.ok) {
-        alert("Could not upload image,Try again");
+        alert("Could not upload image, try again");
         return;
       }
       const data = await response.json();
@@ -109,7 +107,6 @@ const Profile: React.FC = () => {
         ...prev,
         profilePhoto: data.image,
       }));
-      console.log(data.image);
     } catch (e) {
       console.log(e);
       alert("Image upload failed");
@@ -117,6 +114,7 @@ const Profile: React.FC = () => {
       setUploadingImage(false);
     }
   };
+
   if (!user.email) {
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -128,22 +126,18 @@ const Profile: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto px-4">
       <div className="flex flex-col md:flex-row items-center md:space-x-6">
-        <div className="flex-shrink-0 mb-4 md:mb-0  ">
+        <div className="flex-shrink-0 mb-4 md:mb-0">
           {uploadingImage ? (
             <Loader />
           ) : (
-            <label
-              htmlFor="profile-img"
-              onClick={() => console.log("hi")}
-              className="cursor-pointer "
-            >
+            <label htmlFor="profile-img" className="cursor-pointer">
               <img
                 src={
                   user.profilePhoto ||
                   "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
                 }
                 alt="profile"
-                className="text-center  hover:opacity-75 active:opacity-75 w-32 h-32 text-xs italic object-cover rounded-full border-2 border-blue-600"
+                className="text-center hover:opacity-75 active:opacity-75 w-32 h-32 text-xs italic object-cover rounded-full border-2 border-blue-600"
               />
             </label>
           )}
@@ -177,10 +171,9 @@ const Profile: React.FC = () => {
           up to date.
         </p>
       </div>
-
-      {/* Edit profile */}
+{/* edit profile */}
       <div className="edit-profile mt-4">
-        <fieldset className="border border-gray-300 rounded p-4">
+        <fieldset className="border border-gray-300 rounded p-2">
           <legend className="text-base font-semibold text-gray-700">
             Edit Username
           </legend>
@@ -191,26 +184,71 @@ const Profile: React.FC = () => {
               name="username"
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
-              className="mt-1 block w-full bg-gray-100 rounded-sm text-sm  focus:outline-blue-500 p-3"
+              className="mt-1 block w-full bg-gray-100 rounded-sm text-sm focus:outline-blue-500 p-3"
               placeholder="Enter your username"
             />
           </div>
         </fieldset>
       </div>
-      {/* Edit buttons */}
+
       <div className="mt-6 flex justify-center space-x-3">
         <Button
-          className="px-4 text-xs py-2 bg-blue-500 text-white active:bg-blue-600 hover:bg-blue-400"
+          className="px-4 text-xs py-2 bg-blue-500 text-white active:bg-blue-600 hover:bg-blue-400 flex items-center justify-center gap-2"
           onClick={handleUsernameUpdate}
           disabled={savingUsername}
         >
+          {savingUsername && (
+            <svg
+              className="animate-spin h-4 w-4 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              ></path>
+            </svg>
+          )}
           {savingUsername ? "Saving..." : "Save Username"}
         </Button>
+
         <Button
           onClick={handleLogout}
-          className="px-4 text-xs py-2 bg-red-500 text-white active:bg-red-600 hover:bg-red-400"
+          className="px-4 text-xs py-2 bg-red-500 text-white active:bg-red-600 hover:bg-red-400 flex items-center justify-center gap-2"
           disabled={loggingOut}
         >
+          {loggingOut && (
+            <svg
+              className="animate-spin h-4 w-4 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              ></path>
+            </svg>
+          )}
           {loggingOut ? "Logging out..." : "Log Out"}
         </Button>
       </div>

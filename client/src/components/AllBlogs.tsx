@@ -1,11 +1,29 @@
-import React from 'react';
-
+import React from "react";
+import { useUserContext } from "../contexts/UserContext";
+import NotFound from "../components/NotFound";
+import Loader from "../components/Loader";
+import PostCard from "./PostCard";
 const AllBlogs: React.FC = () => {
+  const { posts, loadingPosts } = useUserContext();
+
+  if (loadingPosts)
     return (
-        <div>
-            <h2>All Blogs</h2>
-        </div>
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
     );
+
+  return (
+    <div className="flex flex-col gap-6 max-w-3xl md:px-2 mx-auto ">
+      {posts.length ? (
+        posts.map((post) => (
+          <PostCard post={post} key={post._id} hideOption={false} />
+        ))
+      ) : (
+        <NotFound children="Create one" />
+      )}
+    </div>
+  );
 };
 
 export default AllBlogs;

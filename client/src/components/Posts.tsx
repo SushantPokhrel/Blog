@@ -16,7 +16,7 @@ const Posts: React.FC = () => {
   return (
     <div className=" flex flex-col gap-6 ">
       {posts.map((post) => (
-        <PostCard post={post} key={post._id}/>
+        <PostCard post={post} key={post._id} hideOption={true} />
       ))}
     </div>
   );

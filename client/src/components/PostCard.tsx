@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { PiHandsClappingThin } from "react-icons/pi";
+import DropdownMenuDemo from "./Dropdown";
 
 type Post = {
   title: string;
@@ -17,22 +18,25 @@ type Post = {
 };
 type Props = {
   post: Post;
+  hideOption?: boolean;
 };
-const PostCard: React.FC<Props> = ({ post }) => {
-      const Months = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
+type BlogPostOptions = "save" | "edit" | "delete" | "share" | "authorInfo";
+
+const PostCard: React.FC<Props> = ({ post, hideOption }) => {
+  const Months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const formatDate = (isoDate: string) => {
     const d = new Date(isoDate);
     const day = d.getDate().toString().padStart(2, "0"); // ensures 01, 02 etc.
@@ -40,6 +44,13 @@ const PostCard: React.FC<Props> = ({ post }) => {
     const year = d.getFullYear();
     return `${month} ${day}, ${year}`;
   };
+  const PostCardOptions: BlogPostOptions[] = [
+    "save",
+    "edit",
+    "delete",
+    "share",
+    "authorInfo",
+  ];
   return (
     <>
       <Link
@@ -72,16 +83,22 @@ const PostCard: React.FC<Props> = ({ post }) => {
                   <span>{post.likeCount}</span>
                 </span>
               </div>
-              <div
-                className="text-xl font-semibold hover:scale-125"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert("This feature will be added soon");
-                  e.stopPropagation();
-                }}
-              >
-                ...
-              </div>
+              <DropdownMenuDemo
+                postId={post._id}
+                hideOption={hideOption}
+                TriggerChild={
+                  <div
+                    className="text-xl font-semibold hover:scale-125"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                  >
+                    ...
+                  </div>
+                }
+                postcardOptions={PostCardOptions}
+              />
             </div>
           </div>
           <div className=" basis-1/4  self-center  md:self-start md:basis-2/5 ">

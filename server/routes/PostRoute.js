@@ -4,6 +4,7 @@ const { verifyToken } = require("../middlewares/Auth");
 const postsController = require("../controllers/PostController");
 
 router.post("/", verifyToken, postsController.createPost);
+router.patch("/edit/:postId",verifyToken,postsController.editPostById)
 router.get("/all", verifyToken, postsController.getAllPosts);
 router.get("/", verifyToken, postsController.getPostsByCategory);
 router.post("/liked/:id", verifyToken, postsController.likePost);

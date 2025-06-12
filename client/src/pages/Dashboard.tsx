@@ -4,7 +4,6 @@ import { Outlet, NavLink } from "react-router-dom";
 import { returnIcons } from "../Utilities/ReturnIcons";
 import { IoMdClose } from "react-icons/io"; // Close icon
 import { MdOutlineMenuOpen } from "react-icons/md";
-import Footer from "../components/Footer";
 
 const Dashboard: React.FC = () => {
   const { user } = useUserContext();
@@ -77,8 +76,8 @@ const Dashboard: React.FC = () => {
           )}
         </ul>
       </aside>
-      <main className="grow md:ml-[20%]  flex flex-col ">
-        <div className="dashboard-options flex md:hidden p-2.5">
+      <main className="grow md:ml-[20%]  py-1 flex flex-col justify-center">
+        <div className="dashboard-options flex justify-end md:hidden p-2.5">
           <span className="active:bg-blue-300 p-1.5 border border-gray-300 rounded-sm">
             <MdOutlineMenuOpen
               className="size-6 active:bg-blue-300 text-gray-600 "
@@ -87,10 +86,9 @@ const Dashboard: React.FC = () => {
           </span>
         </div>
         {/* Main content area */}
-        <div className="py-8 px-3">
+        <div className="py-8  px-3">
           <Outlet />
         </div>
-        <Footer />
       </main>
     </div>
   );

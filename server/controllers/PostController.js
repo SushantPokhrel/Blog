@@ -54,7 +54,7 @@ const createPost = async (req, res) => {
     });
 
     const savedPost = await newPost.save();
-    console.log(savedPost);
+    console.log(savedPost.title);
     res
       .status(201)
       .json({ message: "Post created successfully", post: savedPost });
@@ -63,7 +63,75 @@ const createPost = async (req, res) => {
     res.status(500).json({ message: "Failed to create post" });
   }
 };
+const editPostById = async (req, res) => {
+  const { content, title, image, category, tags, subTitle } = req.body;
 
+  const cleanHtml = sanitizeHtml(content, {
+    allowedTags: [
+      "p",
+      "b",
+      "i",
+      "u",
+      "em",
+      "strong",
+      "a",
+      "ul",
+      "ol",
+      "li",
+      "br",
+      "span",
+      "img",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "blockquote",
+      "pre",
+      "code",
+    ],
+    allowedAttributes: {
+      a: ["href", "name", "target", "rel"],
+      img: ["src", "alt", "width", "height", "style"],
+      code: ["class", "style"],
+      pre: ["class", "style"],
+      "*": ["style", "class"],
+    },
+    allowedSchemes: ["http", "https", "data"],
+    allowedSchemesByTag: { img: ["http", "https", "data"] },
+    allowProtocolRelative: false,
+  });
+  const { postId } = req.params;
+  const user_id = req.user.user_id;
+  try {
+    const oldPost = await postSchema.findById(postId);
+    console.log(oldPost);
+    console.log(oldPost.author);
+    if (oldPost.author.toString() !== user_id && req.user.role !== "admin") {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    const updatedPost = await postSchema.findByIdAndUpdate(
+      postId,
+      {
+        title,
+        subTitle,
+        content: cleanHtml,
+        banner: image,
+        category,
+        tags,
+      },
+      { new: true, runValidators: true } // returns updated and validated post
+    );
+    console.log(updatedPost.subTitle);
+    return res
+      .status(200)
+      .json({ message: "Post updated successfully", post: updatedPost });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
 const getAllPosts = async (req, res) => {
   try {
     const posts = await postSchema.find().sort({ createdAt: -1 });
@@ -129,7 +197,7 @@ const getPostByQuery = async (req, res) => {
 };
 // posts by author
 const getPostsByAuthor = async (req, res) => {
-  const { authorName} = req.params;
+  const { authorName } = req.params;
   const posts = await postSchema
     .find({ authorName: authorName })
     .sort({ createdAt: -1 });
@@ -194,4 +262,5 @@ module.exports = {
   getPostById,
   getPostByQuery,
   getPostsByAuthor,
+  editPostById,
 };

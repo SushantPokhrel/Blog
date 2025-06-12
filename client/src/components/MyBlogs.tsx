@@ -60,9 +60,9 @@ const MyBlogs: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl md:px-2 mx-auto">
+    <div className="flex flex-col gap-6 max-w-3xl md:px-2 mx-auto ">
       {posts.length ? (
-        posts.map((post) => <PostCard post={post} key={post._id} />)
+        posts.map((post) => <PostCard post={post} key={post._id} hideOption={false}/>)
       ) : (
         <NotFound children="Create one" />
       )}

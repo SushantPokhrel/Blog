@@ -3,6 +3,7 @@ import { HiMiniBars3 } from "react-icons/hi2";
 import { IoMdClose } from "react-icons/io"; // Close icon
 import { FaPenClip } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
+import { IoPersonOutline } from "react-icons/io5";
 
 import Button from "./Button";
 import { useUserContext } from "../contexts/UserContext";
@@ -53,30 +54,31 @@ const Nav: React.FC = () => {
           <span className="text-blue-400">Vibe</span>Write
         </Link>
       </div>
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-1.5 md:gap-2  items-center">
         {isAuthenticated && <DialogDemo />}
         {isAuthenticated && (
           <Link
             to="/createPost"
-            className="flex items-center p-1 gap-2 cursor-pointer text-sm active:bg-blue-200 text-gray-500 hover:text-gray-800"
+            className="flex items-center p-1.5 rounded-sm gap-2 cursor-pointer text-sm active:bg-blue-200 text-gray-500 hover:text-gray-800"
           >
             <FaPenClip className="size-3" /> <span>Write</span>
           </Link>
         )}
         {isAuthenticated && (
           <div
-            className="hamburger-menu p-2 active:bg-blue-200 text-gray-500 md:hidden"
+            className="hamburger-menu p-2 rounded-sm active:bg-blue-200 text-gray-500 md:hidden"
             onClick={handleToggleMenu}
           >
             <HiMiniBars3 className="size-5" />
           </div>
         )}
         {isAuthenticated && (
-          <Link to="/dashboard" onClick={() => setIsOpen(false)} className="hidden md:inline-block">
-            <Button
-              children="Profile"
-              className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white text-sm active:bg-blue-600"
-            />
+          <Link
+            to="/dashboard"
+            onClick={() => setIsOpen(false)}
+            className="hidden md:inline-block p-1.5 rounded-sm active:bg-blue-200 text-gray-500 hover:text-gray-700"
+          >
+            <IoPersonOutline className="size-4 " />
           </Link>
         )}
       </div>
@@ -113,19 +115,20 @@ const Nav: React.FC = () => {
           ))}
         </ul>
         {isAuthenticated ? (
-          <div className="flex justify-between ">
+          <div className="flex justify-between items-center">
             {" "}
             <Link to="/" onClick={() => setIsOpen(false)}>
               <Button
                 children="Home"
-                className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white active:bg-blue-600"
+                className="py-1.5 px-4 bg-blue-500 hover:bg-blue-700 text-white active:bg-blue-600"
               />
             </Link>
-            <Link to="/dashboard" onClick={() => setIsOpen(false)}>
-              <Button
-                children="Profile"
-                className="py-2 px-4 bg-blue-500 hover:bg-blue-700 text-white active:bg-blue-600"
-              />
+            <Link
+              to="/dashboard"
+              onClick={() => setIsOpen(false)}
+              className="p-1.5 rounded-sm active:bg-blue-200 text-gray-500"
+            >
+              <IoPersonOutline className="size-5 " />
             </Link>
           </div>
         ) : (

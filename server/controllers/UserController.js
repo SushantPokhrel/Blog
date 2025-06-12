@@ -66,6 +66,8 @@ const loginController = async (req, res) => {
         email: User.email,
         username: User.username,
         role: User.role,
+        customUsername: User.customUsername,
+        picture: User.picture,
       },
       process.env.JWT_SECRET_KEY,
       { expiresIn: "60m" }
@@ -85,6 +87,8 @@ const loginController = async (req, res) => {
       username: User.username,
       user_id: User._id,
       role: User.role,
+      customUsername: User.customUsername,
+      picture: User.picture,
     });
   } catch (e) {
     console.log(e.message);
@@ -280,7 +284,7 @@ const updateUsernameController = async (req, res) => {
     });
 
     return res.status(200).json({
-      customUsername: username,
+      customUsername: updatedUser.customUsername,
     });
   } catch (error) {
     console.error("Error updating username:", error);
