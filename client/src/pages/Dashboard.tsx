@@ -7,7 +7,7 @@ import { MdOutlineMenuOpen } from "react-icons/md";
 
 const Dashboard: React.FC = () => {
   const { user } = useUserContext();
-  const linksUser = ["Profile", "MyBlogs", "CreateNew"];
+  const linksUser = ["Profile", "MyBlogs", "CreateNew","SavedPosts"];
   const linksAdmin = [...linksUser, "AllUsers", "AllPosts", "Analytics"];
   const [isOpen, setIsOpen] = useState(false);
   // Function to render NavLinks based on item
@@ -76,17 +76,15 @@ const Dashboard: React.FC = () => {
           )}
         </ul>
       </aside>
-      <main className="grow md:ml-[20%]  py-1 flex flex-col justify-center">
-        <div className="dashboard-options flex justify-end md:hidden p-2.5">
-          <span className="active:bg-blue-300 p-1.5 border border-gray-300 rounded-sm">
-            <MdOutlineMenuOpen
-              className="size-6 active:bg-blue-300 text-gray-600 "
-              onClick={() => setIsOpen(true)}
-            />
-          </span>
-        </div>
+      <main className="grow md:ml-[20%]  py-1 flex flex-col ">
+        <span className="active:bg-blue-300 m-1 p-2 rounded-sm self-start md:hidden">
+          <MdOutlineMenuOpen
+            className="size-6 active:bg-blue-300 text-gray-600 "
+            onClick={() => setIsOpen(true)}
+          />
+        </span>
         {/* Main content area */}
-        <div className="py-8  px-3">
+        <div className="py-5 md:py-8 px-3">
           <Outlet />
         </div>
       </main>

@@ -6,6 +6,8 @@ import {
   MdAnalytics,
   MdPeopleOutline,
 } from "react-icons/md";
+import { IoSaveOutline } from "react-icons/io5";
+
 const iconsMap: { [key: string]: IconType } = {
   Profile: MdPersonOutline,
   MyBlogs: MdArticle,
@@ -13,6 +15,7 @@ const iconsMap: { [key: string]: IconType } = {
   AllUsers: MdPeopleOutline,
   AllPosts: MdArticle,
   Analytics: MdAnalytics,
+  SavedPosts:IoSaveOutline
 };
 
 export const returnIcons = (name: string) => {

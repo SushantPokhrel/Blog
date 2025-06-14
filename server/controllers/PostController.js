@@ -1,6 +1,6 @@
 const sanitizeHtml = require("sanitize-html");
 const postSchema = require("../models/Post");
-
+const userSchema = require("../models/User");
 const createPost = async (req, res) => {
   const { content, title, image, category, tags, subTitle } = req.body;
 
@@ -132,6 +132,31 @@ const editPostById = async (req, res) => {
     });
   }
 };
+const deletePostById = async (req, res) => {
+  const { postId } = req.params;
+  const user_id = req.user.user_id;
+  try {
+    const oldPost = await postSchema.findById(postId);
+    console.log(oldPost);
+    console.log(oldPost.author);
+    if (oldPost.author.toString() !== user_id && req.user.role !== "admin") {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+    const deletedPost = await postSchema.findByIdAndDelete(postId);
+
+    if (!deletedPost) {
+      // No post found with the given id
+      return res.status(404).json({ message: "Post not found" });
+    }
+    return res.status(200).json({
+      message: "Post deleted successfully",
+      deletedId: deletedPost._id,
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const getAllPosts = async (req, res) => {
   try {
     const posts = await postSchema.find().sort({ createdAt: -1 });
@@ -148,7 +173,17 @@ const getAllPosts = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
+const getSavedPosts = async (req, res) => {
+  const { email } = req.params;
+  const Posts = await userSchema.findOne({ email }).populate("savedPosts");
+const savedPosts = Posts.savedPosts
+const updatedPosts = savedPosts.map((post) => {
+      const obj = post.toObject();
+      obj.likeCount = post.likes.length;
+      return obj;
+    })
+  return res.status(200).json(updatedPosts); // send updatedPosts with likesCount
+};
 const getPostsByCategory = async (req, res) => {
   const category = req.query.category;
   console.log(category);
@@ -198,15 +233,26 @@ const getPostByQuery = async (req, res) => {
 // posts by author
 const getPostsByAuthor = async (req, res) => {
   const { authorName } = req.params;
+
   const posts = await postSchema
     .find({ authorName: authorName })
     .sort({ createdAt: -1 });
-  if (!posts.length)
+
+  if (!posts.length) {
     return res.status(404).json({
       message: "No posts found",
     });
-  return res.status(200).json(posts);
+  }
+
+  const updatedPosts = posts.map((post) => {
+    const obj = post.toObject();
+    obj.likeCount = post.likes.length;
+    return obj;
+  });
+
+  return res.status(200).json(updatedPosts);
 };
+
 // like a post
 const likePost = async (req, res) => {
   try {
@@ -263,4 +309,6 @@ module.exports = {
   getPostByQuery,
   getPostsByAuthor,
   editPostById,
+  deletePostById,
+  getSavedPosts,
 };

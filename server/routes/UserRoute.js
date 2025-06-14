@@ -11,13 +11,16 @@ const {
   logout,
   updateProfileImgController,
   updateUsernameController,
+  savePostById,
+  unsavePostById
 } = require("../controllers/UserController");
 
 router.post("/signup", signupController);
 router.post("/login", loginController);
 router.post("/google", googleController);
 router.post("/logout", verifyToken, logout);
-
+router.post("/save/:postId",verifyToken,savePostById)
+router.delete("/unsave/:postId",verifyToken,unsavePostById)
 router.patch(
   "/user/profileImg",
   verifyToken,

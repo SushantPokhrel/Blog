@@ -136,7 +136,7 @@ const AuthForm: React.FC = () => {
     <div className="form-container wrapper">
       <form
         onSubmit={handleSubmit}
-        className="w-11/12 max-w-lg flex flex-col gap-4 rounded-lg mx-auto shadow-lg py-6 px-5"
+        className="w-11/12 max-w-lg flex flex-col gap-4 rounded-lg mx-auto shadow-sm py-6 px-5"
       >
         <h1 className="text-xl font-semibold">{login ? "Login" : "Sign Up"}</h1>
 
@@ -223,7 +223,7 @@ const AuthForm: React.FC = () => {
           <Button
             ref={focusRef}
             onClick={() => !processingGoogle && googleLogin()}
-            className="flex w-full p-2 active:bg-blue-300 focus:outline-blue-600 hover:bg-blue-100 justify-center gap-2 text-gray-700 cursor-pointer items-center"
+            className="flex w-full p-2  focus:outline-blue-600 border hover:bg-blue-300 justify-center gap-2 text-gray-700 cursor-pointer items-center"
             disabled={processingDefault || processingGoogle}
           >
             {processingGoogle ? (

@@ -39,6 +39,14 @@ type UserContextTypes = {
   setLoadingPosts: React.Dispatch<React.SetStateAction<boolean>>;
   categoryPostsLoading: boolean;
   setCategoryPostsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  individualPosts: Post[];
+  fetchIndividualPosts: (username: string) => Promise<void>;
+  setIndividualPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  savedPosts: Post[];
+  setSavedPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  fetchSavedPosts: (email: string) => Promise<void>;
+  savedPostsLoading: boolean;
+  savedIds: string[];
 };
 
 type UserContextProviderProps = {
@@ -57,16 +65,21 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
     role: "",
     customUsername: "",
   });
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [categoryPostsLoading, setCategoryPostsLoading] = useState(true);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [individualPosts, setIndividualPosts] = useState<Post[]>([]);
+  const [savedPosts, setSavedPosts] = useState<Post[]>([]);
+  const [savedPostsLoading, setSavedPostsLoading] = useState(false);
   const [category, setCategory] = useState(() => {
-    console.log(location.search);
     const searchParams = new URLSearchParams(location.search);
     return searchParams.get("category") || "For You";
-  }); // check user authentication state
+  });
+
+  const [savedIds, setSavedIds] = useState<string[] | []>([]);
   const checkAuth = async () => {
     try {
       const response = await fetch(`${backendUrl}/api/auth/me`, {
@@ -79,27 +92,25 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
           alert("Login again");
           location.href = "/user/auth";
         }
-        console.log(err.message);
 
         setUser({
           email: "",
           username: "",
           profilePhoto: "",
           role: "",
-          customUsername:""
+          customUsername: "",
         });
         return;
       }
 
       const data = await response.json();
-      console.log(data)
-      const { email, username, picture, role,customUsername } = data.user;
+      const { email, username, picture, role, customUsername } = data.user;
       setUser({
         email,
         username,
         profilePhoto: picture,
         role,
-        customUsername
+        customUsername,
       });
       setIsAuthenticated(true);
     } catch (e) {
@@ -110,14 +121,13 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
         username: "",
         profilePhoto: "",
         role: "",
-        customUsername:""
+        customUsername: "",
       });
     } finally {
-      console.log("Auth check finally ran");
       setLoading(false);
     }
   };
-  // fetch all posts
+
   const fetchPosts = async () => {
     setCategoryPostsLoading(true);
     try {
@@ -129,8 +139,8 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
       );
       if (!res.ok) throw new Error("Failed to fetch posts");
       const data = await res.json();
-      console.log("Fetched posts:", data);
       setPosts(data);
+      console.log("all posts", data);
     } catch (err) {
       console.error("Error fetching posts:", err);
     } finally {
@@ -138,27 +148,77 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
       setCategoryPostsLoading(false);
     }
   };
+
+  const fetchIndividualPosts = async (username: string) => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/posts/author/${username}`,
+        {
+          credentials: "include",
+        }
+      );
+
+      if (response.status === 404) {
+        setIndividualPosts([]);
+        return;
+      }
+
+      const data = await response.json();
+      setIndividualPosts(data);
+    } catch (error) {
+      console.error("Error fetching individual posts:", error);
+    }
+  };
+
+  const fetchSavedPosts = async (email: string) => {
+    setSavedPostsLoading(true);
+    try {
+      const response = await fetch(`${backendUrl}/api/posts/saved/${email}`, {
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        console.error("Failed to fetch saved posts");
+        return;
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setSavedPosts(data);
+    } catch (error) {
+      console.error("Error fetching saved posts:", error);
+    } finally {
+      setSavedPostsLoading(false);
+    }
+  };
+
   const capitalizeAfterSpace = (str: string) => {
     return str
       .split(" ")
       .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
+
   useEffect(() => {
     checkAuth();
     fetchPosts();
-
     const intervalId = setInterval(() => {
       checkAuth();
     }, 5 * 60 * 1000);
 
     return () => clearInterval(intervalId);
   }, []);
+
   useEffect(() => {
     if (isAuthenticated) {
       fetchPosts();
+      fetchIndividualPosts(user.username);
+      fetchSavedPosts(user.email);
     }
   }, [isAuthenticated]);
+  useEffect(() => {
+    setSavedIds(savedPosts.map((p) => p._id));
+  }, [savedPosts]);
 
   return (
     <UserContext.Provider
@@ -178,6 +238,14 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({
         setLoadingPosts,
         categoryPostsLoading,
         setCategoryPostsLoading,
+        individualPosts,
+        fetchIndividualPosts,
+        setIndividualPosts,
+        savedPosts,
+        setSavedPosts,
+        fetchSavedPosts,
+        savedPostsLoading,
+        savedIds,
       }}
     >
       {children}

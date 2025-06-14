@@ -1,7 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { PiHandsClappingThin } from "react-icons/pi";
 import DropdownMenuDemo from "./Dropdown";
+import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
+import { useUserContext } from "../contexts/UserContext";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 type Post = {
   title: string;
@@ -20,9 +23,15 @@ type Props = {
   post: Post;
   hideOption?: boolean;
 };
-type BlogPostOptions = "save" | "edit" | "delete" | "share" | "authorInfo";
+type BlogPostOptions = "edit" | "delete" | "author info";
 
 const PostCard: React.FC<Props> = ({ post, hideOption }) => {
+  const { savedPosts, setSavedPosts, savedIds } = useUserContext();
+  const [saved, setSaved] = useState(false);
+
+ 
+  const navigate = useNavigate();
+
   const Months = [
     "Jan",
     "Feb",
@@ -37,6 +46,8 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
     "Nov",
     "Dec",
   ];
+  const PostCardOptions: BlogPostOptions[] = ["edit", "delete", "author info"];
+
   const formatDate = (isoDate: string) => {
     const d = new Date(isoDate);
     const day = d.getDate().toString().padStart(2, "0"); // ensures 01, 02 etc.
@@ -44,13 +55,62 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
     const year = d.getFullYear();
     return `${month} ${day}, ${year}`;
   };
-  const PostCardOptions: BlogPostOptions[] = [
-    "save",
-    "edit",
-    "delete",
-    "share",
-    "authorInfo",
-  ];
+
+  const handleSavePost = async (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const response = await fetch(`${backendUrl}/api/auth/save/${post._id}`, {
+        credentials: "include",
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        alert("Failed to save the post");
+        return;
+      }
+      const savedPostData = await response.json();
+
+      alert("Post saved ✔");
+
+      // Update savedPosts in context by adding this post
+      setSavedPosts([...savedPosts, post]);
+
+      // Optionally navigate to saved posts page
+      navigate("/dashboard/savedposts");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleUnsavePost = async (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const response = await fetch(
+        `${backendUrl}/api/auth/unsave/${post._id}`,
+        {
+          credentials: "include",
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        alert("Failed to unsave the post");
+        return;
+      }
+      const data = await response.json();
+      alert("Post removed from your list ✔");
+
+      // Update savedPosts in context by removing this post
+      setSavedPosts((prev) => prev.filter((p) => p._id !== post._id));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+ useEffect(() => {
+    setSaved(savedIds.includes(post._id));
+  }, [savedIds]);
   return (
     <>
       <Link
@@ -74,7 +134,7 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
               {post.subTitle}
             </p>
             <div className="lower-section text-[12px] flex justify-between gap-1.5">
-              <div className="flex gap-2.5 items-center">
+              <div className="flex gap-3 items-center">
                 <span className="text-gray-700">
                   {formatDate(post.createdAt)}
                 </span>
@@ -82,6 +142,16 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
                   <PiHandsClappingThin className="size-5" />
                   <span>{post.likeCount}</span>
                 </span>
+
+                {saved ? (
+                  <span className="save-post" onClick={handleUnsavePost}>
+                    <MdLibraryAddCheck className="size-5" />
+                  </span>
+                ) : (
+                  <span className="save-post" onClick={handleSavePost}>
+                    <MdLibraryAdd className="size-5" />
+                  </span>
+                )}
               </div>
               <DropdownMenuDemo
                 postId={post._id}

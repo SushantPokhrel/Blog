@@ -137,7 +137,7 @@ const Profile: React.FC = () => {
                   "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
                 }
                 alt="profile"
-                className="text-center hover:opacity-75 active:opacity-75 w-32 h-32 text-xs italic object-cover rounded-full border-2 border-blue-600"
+                className="text-center hover:opacity-75 active:opacity-75 w-28 h-28 text-xs italic object-cover rounded-full "
               />
             </label>
           )}
@@ -151,30 +151,30 @@ const Profile: React.FC = () => {
           accept="image/*"
         />
         <div className="flex-1 text-center md:text-left">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-xl font-bold text-gray-800">
             {user.customUsername || user.username}
           </h2>
-          <p className="text-gray-600 text-sm mt-1">{user.email}</p>
-          <p className="text-gray-500 text-sm mt-1 font-semibold">
+          <p className="text-gray-600 text-xs mt-1 ">{user.email}</p>
+          <p className="text-gray-500 text-xs mt-1 font-semibold">
             {user.role.toUpperCase()}
           </p>
         </div>
       </div>
 
-      <div className="mt-6 border-t border-gray-200 pt-4">
-        <h3 className="font-semibold text-gray-700 mb-2">
+      <div className="mt-6 border-t border-gray-200 pt-4 text-center">
+        <h3 className="font-semibold text-gray-700 mb-2 text-sm">
           Hello {user.customUsername || user.username.split(" ")[0]}
         </h3>
-        <p className="text-gray-600 text-sm">
+        <p className="text-gray-600 text-xs">
           Welcome to your profile page! Here you can view and manage your
           personal information. We aim to ensure your data is always secure and
           up to date.
         </p>
       </div>
-{/* edit profile */}
+      {/* edit profile */}
       <div className="edit-profile mt-4">
         <fieldset className="border border-gray-300 rounded p-2">
-          <legend className="text-base font-semibold text-gray-700">
+          <legend className="text-sm font-semibold text-gray-700">
             Edit Username
           </legend>
           <div className="mt-2">
@@ -184,7 +184,7 @@ const Profile: React.FC = () => {
               name="username"
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
-              className="mt-1 block w-full bg-gray-100 rounded-sm text-sm focus:outline-blue-500 p-3"
+              className="mt-1 block  w-full bg-gray-100 rounded-sm text-sm focus:outline-blue-500 p-3"
               placeholder="Enter your username"
             />
           </div>

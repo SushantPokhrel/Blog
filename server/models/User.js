@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema({
       ref: "post",
     },
   ],
+  savedPosts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "post",
+    },
+  ],
   role: { type: String, enum: ["user", "admin"], default: "user" },
   picture: { type: String },
   googleId: { type: String }, // optional

@@ -1,9 +1,11 @@
 const USER = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 const adminEmail = process.env.ADMIN_EMAIL;
 const fetch = require("node-fetch");
 const { OAuth2Client } = require("google-auth-library");
+const { getPostById } = require("./PostController");
 const client = new OAuth2Client();
 
 const signupController = async (req, res) => {
@@ -291,6 +293,26 @@ const updateUsernameController = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+const savePostById = async (req, res) => {
+  const { postId } = req.params;
+  const user_id = req.user.user_id;
+  const user = await USER.findById(user_id);
+  user.savedPosts.push(new mongoose.Types.ObjectId(postId));
+  await user.save();
+  return res.status(200).json({
+    message: "Post saved successfully",
+  });
+};
+const unsavePostById = async (req, res) => {
+  const { postId } = req.params;
+  const user_id = req.user.user_id;
+  const user = await USER.findById(user_id);
+  user.savedPosts = user.savedPosts.filter((id) => id.toString() != postId);
+  await user.save();
+  return res.status(200).json({
+    message: "Post removed from your library",
+  });
+};
 const logout = async (req, res) => {
   if (!req.user) {
     return res.status(401).json({ message: "unauthorized access" });
@@ -309,5 +331,7 @@ module.exports = {
   googleController,
   updateProfileImgController,
   updateUsernameController,
+  savePostById,
+  unsavePostById,
   logout,
 };

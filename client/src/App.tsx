@@ -18,7 +18,8 @@ import Users from "./components/Users";
 import Analytics from "./components/Analytics";
 import AllBlogs from "./components/AllBlogs";
 import EditPost from "./pages/Edit";
-
+import SavedPosts from "./pages/SavedPosts";
+import Admin from "./routes/Admin";
 function App() {
   return (
     <>
@@ -88,10 +89,32 @@ const AppRoutes = () => {
           }
         >
           <Route index element={<Profile />} />
-          <Route path="allusers" element={<Users />} />
           <Route path="myblogs" element={<MyBlogs />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="allposts" element={<AllBlogs />} />
+          <Route path="savedposts" element={<SavedPosts />} />
+          <Route
+            path="allusers"
+            element={
+              <Admin>
+                <Users />
+              </Admin>
+            }
+          />
+          <Route
+            path="analytics"
+            element={
+              <Admin>
+                <Analytics />
+              </Admin>
+            }
+          />
+          <Route
+            path="allposts"
+            element={
+              <Admin>
+                <AllBlogs />
+              </Admin>
+            }
+          />
         </Route>
 
         <Route path="*" element={<NotFound children="Home" />} />

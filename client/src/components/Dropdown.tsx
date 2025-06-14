@@ -1,6 +1,8 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import type React from "react";
 import { useNavigate } from "react-router-dom";
+import { useUserContext } from "../contexts/UserContext";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 type CategoryTypes =
   | "Web Development"
   | "App Development"
@@ -12,7 +14,7 @@ type CategoryTypes =
   | "Blockchain"
   | "Internet of Things (IoT)"
   | "UI/UX Design";
-type BlogPostOptions = "save" | "edit" | "delete" | "share" | "authorInfo";
+type BlogPostOptions = "edit" | "delete" | "author info";
 type Props = {
   setCategory?: React.Dispatch<React.SetStateAction<CategoryTypes>>;
   category?: CategoryTypes;
@@ -31,6 +33,7 @@ export default function DropdownMenuDemo({
   hideOption,
   postId,
 }: Props) {
+  const { setPosts, setIndividualPosts } = useUserContext();
   const hiddenOptions = ["edit", "delete"];
   const navigate = useNavigate();
   const handleDropdownCategory = (value: CategoryTypes) => {
@@ -39,10 +42,37 @@ export default function DropdownMenuDemo({
       setCategory(value);
     }
   };
+  const handleDeletePost = async () => {
+    try {
+      const response = await fetch(`${backendUrl}/api/posts/delete/${postId}`, {
+        credentials: "include",
+        method: "DELETE",
+      });
+      console.log(response.ok);
+      if (!response.ok) {
+        alert("Failed to delete post");
+        return;
+      }
+      const data = await response.json();
+      const { deletedId } = data;
+      setPosts((prev) => {
+        return prev.filter((post) => post._id !== deletedId);
+      });
+      setIndividualPosts((prev) => {
+        return prev.filter((post) => post._id !== deletedId);
+      });
+      alert("Post deleted successfully");
+    } catch (e) {
+      alert("Failed to delete post");
+    }
+  };
+ 
   const handleDropdownOptions = (value: BlogPostOptions) => {
     console.log(value);
     if (value === "edit") {
       navigate(`/editPost/${postId}`);
+    } else if (value === "delete") {
+      handleDeletePost();
     }
   };
   return (
@@ -51,7 +81,7 @@ export default function DropdownMenuDemo({
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          className="bg-white text-black shadow-md p-2 "
+          className="bg-white text-black shadow-md p-2 rounded-md"
           side="top"
           sideOffset={-4}
           align="start"
