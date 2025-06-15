@@ -26,7 +26,7 @@ type Props = {
 type BlogPostOptions = "edit" | "delete" | "author info";
 
 const PostCard: React.FC<Props> = ({ post, hideOption }) => {
-  const { savedPosts, setSavedPosts, savedIds } = useUserContext();
+  const { setSavedPosts, savedIds } = useUserContext();
   const [saved, setSaved] = useState(false);
 
   const navigate = useNavigate();
@@ -68,12 +68,11 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
         alert("Failed to save the post");
         return;
       }
-      const savedPostData = await response.json();
 
       alert("Post saved ✔");
 
       // Update savedPosts in context by adding this post
-      setSavedPosts([...savedPosts, post]);
+      setSavedPosts((prev) => [...prev, post]);
 
       // Optionally navigate to saved posts page
       navigate("/dashboard/savedposts");
@@ -98,7 +97,6 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
         alert("Failed to unsave the post");
         return;
       }
-      const data = await response.json();
       alert("Post removed from your list ✔");
 
       // Update savedPosts in context by removing this post

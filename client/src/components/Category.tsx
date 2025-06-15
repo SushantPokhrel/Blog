@@ -1,5 +1,5 @@
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
-import { useEffect, useRef} from "react";
+import { useEffect, useRef } from "react";
 import { useUserContext } from "../contexts/UserContext";
 import { useLocation, useSearchParams } from "react-router-dom";
 
@@ -19,15 +19,14 @@ const topics = [
 
 const Category = () => {
   const ulRef = useRef<HTMLUListElement | null>(null);
-  const { fetchPosts, setCategory, category } =
-    useUserContext();
+  const { fetchPosts, setCategory, category } = useUserContext();
   const location = useLocation();
   const [_, setSearchParams] = useSearchParams(location.search);
   const handleCategory = (value: string) => {
     setCategory(value);
     // if (value === "for you") {
     //   setSearchParams({});
-      
+
     //   return;
     // }
     setSearchParams({ category: value });
@@ -37,6 +36,7 @@ const Category = () => {
     if (!ulRef.current) return;
 
     const scrollAmount = 150;
+    console.log(ulRef.current.scrollLeft);
     if (direction === "left") {
       ulRef.current.scrollLeft -= scrollAmount;
     } else if (direction === "right") {
@@ -72,7 +72,9 @@ const Category = () => {
               onClick={() => handleCategory(topic.toLowerCase())}
               key={topic}
               className={`${
-                category === topic.toLowerCase() ? "text-gray-800 underline" : "text-gray-500"
+                category === topic.toLowerCase()
+                  ? "text-gray-800 underline"
+                  : "text-gray-500"
               } text-xs cursor-pointer whitespace-nowrap text-center  hover:underline hover:text-gray-800`}
             >
               {topic}

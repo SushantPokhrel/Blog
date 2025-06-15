@@ -1,12 +1,19 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Prism from "prismjs";
-import { PiHandsClappingThin } from "react-icons/pi";
+import { PiArrowArcRightDuotone, PiHandsClappingThin } from "react-icons/pi";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 import "prismjs/themes/prism-tomorrow.css";
 import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
 import NotFound from "../components/NotFound";
 import MemoizedContentDisplay from "../components/BlogContentMemoized";
+import Comment from "../components/Comment";
+type CommentTypes = {
+  username: string;
+  picture: string;
+  content: string;
+  _id: string;
+};
 
 type PostType = {
   title: string;
@@ -44,6 +51,22 @@ function UserPost() {
   const [date, setDate] = useState("");
   const [likeCount, setLikeCount] = useState(0); // Separate state for likes
   const [isLiked, setIsLiked] = useState(post.isLiked);
+  const [comments, setComments] = useState<CommentTypes[]>([
+    {
+      username: "Alice",
+      picture:
+        "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png",
+      content: "Awesome 👋",
+      _id: "1",
+    },
+    {
+      username: "Bob",
+      picture:
+        "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png",
+      content: "Good job 👏",
+      _id: "2",
+    },
+  ]);
   const Months = [
     "Jan",
     "Feb",
@@ -58,7 +81,15 @@ function UserPost() {
     "Nov",
     "Dec",
   ];
-
+  const fetchComments = async () => {
+    const response = await fetch(`${backendUrl}/api/comments/all/${id}`, {
+      credentials: "include",
+    });
+    const data = await response.json();
+    console.log(data)
+    // const { content, username, picture, _id } = data;
+    setComments(data);
+  };
   useEffect(() => {
     fetch(`${backendUrl}/api/posts/${id}`, {
       credentials: "include",
@@ -76,6 +107,9 @@ function UserPost() {
       });
   }, [id]);
 
+  useEffect(() => {
+    fetchComments();
+  }, [id]);
   useEffect(() => {
     const d = new Date(post.createdAt);
     const day = d.getDate().toString().padStart(2, "0");
@@ -189,6 +223,32 @@ function UserPost() {
             </span>
           </span>
           <span>...</span>
+        </div>
+        <Comment setComments={setComments} postId={id} />
+        <div className="show-comments flex flex-col gap-4 ">
+          {comments.length
+            ? comments.map((comment) => (
+                <div
+                  key={comment._id}
+                  className="flex gap-3.5 border-b border-b-gray-200 p-2.5"
+                >
+                  <div>
+                    <img
+                      src={
+                        comment.picture ||
+                        "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
+                      }
+                      alt="profile"
+                      className="w-8 h-8 object-cover rounded-full"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2.5">
+                    <h1 className="text-sm ">{comment.username}</h1>
+                    <p className="text-xs">{comment.content}</p>
+                  </div>
+                </div>
+              ))
+            : null}
         </div>
       </div>
     </div>

@@ -13,7 +13,7 @@ const Footer = () => {
         </p>
         <div>
           <p className="text-sm md:text-base font-normal">SITE LINKS</p>
-          <ul className="list-none flex flex-col gap-2 text-gray-700 text-sm font-light md:text-base">
+          <ul className="list-none flex flex-col gap-2 text-gray-700 text-sm font-light ">
             <li>
               <Link to="/about">About</Link>
             </li>
@@ -30,7 +30,7 @@ const Footer = () => {
         </div>
         <div>
           <p className="text-sm md:text-base font-normal">QUICK LINKS</p>
-          <ul className="list-none flex flex-col gap-2 text-gray-700 font-light text-sm md:text-base">
+          <ul className="list-none flex flex-col gap-2 text-gray-700 font-light text-sm">
             <li>
               <Link to="/">Home</Link>
             </li>
@@ -44,7 +44,7 @@ const Footer = () => {
         </div>
         <div>
           <p className="text-sm md:text-base font-normal">SOCIALS</p>
-          <ul className="list-none flex flex-col gap-2 text-gray-700  font-light text-sm md:text-base">
+          <ul className="list-none flex flex-col gap-2 text-gray-700  font-light text-sm ">
             <li>
               <a
                 href="https://twitter.com/yourblog"

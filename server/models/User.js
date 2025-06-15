@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
     unique: true,
-    default: "",
   },
   email: {
     type: String,
@@ -25,6 +24,12 @@ const userSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "post",
+    },
+  ],
+  commentedPosts: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "comment",
     },
   ],
   savedPosts: [

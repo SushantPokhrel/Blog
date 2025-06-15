@@ -87,6 +87,7 @@ const AuthForm: React.FC = () => {
       const data = await response.json();
       if (response.status === 201) setLogin(true);
       if (response.status === 409) {
+        console.log(data.message)
         alert(data.message);
         setLogin(true);
       }
@@ -136,14 +137,16 @@ const AuthForm: React.FC = () => {
     <div className="form-container wrapper">
       <form
         onSubmit={handleSubmit}
-        className="w-11/12 max-w-lg flex flex-col gap-4 rounded-lg mx-auto shadow-sm py-6 px-5"
+        className="w-11/12 max-w-md flex flex-col gap-4 rounded-lg mx-auto shadow-sm py-6 px-5"
       >
-        <h1 className="text-xl font-semibold">{login ? "Login" : "Sign Up"}</h1>
+        <h1 className="text-2xl font-semibold text-center text-blue-500">
+          {login ? "Login" : "Sign Up"}
+        </h1>
 
         {!login && (
           <div className="flex flex-col gap-2 text-[13px]">
             <label htmlFor="username" className="font-semibold">
-              Username:
+              Username
             </label>
             <input
               required
@@ -158,7 +161,7 @@ const AuthForm: React.FC = () => {
 
         <div className="flex flex-col gap-2 text-[13px]">
           <label htmlFor="email" className="font-semibold">
-            Email:
+            Email
           </label>
           <input
             type="email"
@@ -172,7 +175,7 @@ const AuthForm: React.FC = () => {
 
         <div className="flex flex-col gap-2 text-[13px]">
           <label htmlFor="password" className="font-semibold">
-            Password:
+            Password
           </label>
           <input
             type="password"
