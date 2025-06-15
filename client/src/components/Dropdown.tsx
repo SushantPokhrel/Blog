@@ -66,13 +66,14 @@ export default function DropdownMenuDemo({
       alert("Failed to delete post");
     }
   };
- 
   const handleDropdownOptions = (value: BlogPostOptions) => {
     console.log(value);
     if (value === "edit") {
       navigate(`/editPost/${postId}`);
     } else if (value === "delete") {
       handleDeletePost();
+    } else {
+      navigate(`/author/${postId}`);
     }
   };
   return (

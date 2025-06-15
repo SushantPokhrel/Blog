@@ -29,7 +29,6 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
   const { savedPosts, setSavedPosts, savedIds } = useUserContext();
   const [saved, setSaved] = useState(false);
 
- 
   const navigate = useNavigate();
 
   const Months = [
@@ -108,7 +107,7 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
       console.log(e);
     }
   };
- useEffect(() => {
+  useEffect(() => {
     setSaved(savedIds.includes(post._id));
   }, [savedIds]);
   return (
@@ -144,11 +143,19 @@ const PostCard: React.FC<Props> = ({ post, hideOption }) => {
                 </span>
 
                 {saved ? (
-                  <span className="save-post" onClick={handleUnsavePost}>
+                  <span
+                    className="remove-post"
+                    onClick={handleUnsavePost}
+                    title="remove from saved posts?"
+                  >
                     <MdLibraryAddCheck className="size-5" />
                   </span>
                 ) : (
-                  <span className="save-post" onClick={handleSavePost}>
+                  <span
+                    className="save-post"
+                    onClick={handleSavePost}
+                    title="add to saved posts"
+                  >
                     <MdLibraryAdd className="size-5" />
                   </span>
                 )}

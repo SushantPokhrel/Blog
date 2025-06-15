@@ -20,6 +20,7 @@ import AllBlogs from "./components/AllBlogs";
 import EditPost from "./pages/Edit";
 import SavedPosts from "./pages/SavedPosts";
 import Admin from "./routes/Admin";
+import AuthorInfo from "./pages/AuthorInfo";
 function App() {
   return (
     <>
@@ -77,6 +78,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <EditPost />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/author/:postId"
+          element={
+            <ProtectedRoute>
+              <AuthorInfo />
             </ProtectedRoute>
           }
         />

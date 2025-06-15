@@ -12,15 +12,18 @@ const {
   updateProfileImgController,
   updateUsernameController,
   savePostById,
-  unsavePostById
+  unsavePostById,
+  getUserDetails,
 } = require("../controllers/UserController");
 
 router.post("/signup", signupController);
 router.post("/login", loginController);
 router.post("/google", googleController);
 router.post("/logout", verifyToken, logout);
-router.post("/save/:postId",verifyToken,savePostById)
-router.delete("/unsave/:postId",verifyToken,unsavePostById)
+router.post("/save/:postId", verifyToken, savePostById);
+router.delete("/unsave/:postId", verifyToken, unsavePostById);
+router.get("/user/details/:postId", verifyToken, getUserDetails);
+
 router.patch(
   "/user/profileImg",
   verifyToken,

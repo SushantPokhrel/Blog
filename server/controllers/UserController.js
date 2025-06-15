@@ -1,11 +1,11 @@
 const USER = require("../models/User");
+const POST = require("../models/Post");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const adminEmail = process.env.ADMIN_EMAIL;
 const fetch = require("node-fetch");
 const { OAuth2Client } = require("google-auth-library");
-const { getPostById } = require("./PostController");
 const client = new OAuth2Client();
 
 const signupController = async (req, res) => {
@@ -313,6 +313,13 @@ const unsavePostById = async (req, res) => {
     message: "Post removed from your library",
   });
 };
+const getUserDetails = async (req, res) => {
+  const { postId } = req.params;
+  const post = await POST.findById(postId).populate("author");
+  const user = post.author;
+  console.log(user);
+  return res.status(200).json(user);
+};
 const logout = async (req, res) => {
   if (!req.user) {
     return res.status(401).json({ message: "unauthorized access" });
@@ -332,6 +339,7 @@ module.exports = {
   updateProfileImgController,
   updateUsernameController,
   savePostById,
+  getUserDetails,
   unsavePostById,
   logout,
 };
