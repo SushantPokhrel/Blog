@@ -86,12 +86,13 @@ const AuthForm: React.FC = () => {
       });
       const data = await response.json();
       if (response.status === 201) setLogin(true);
-      if (response.status === 409) {
-        console.log(data.message)
+     else if (response.status === 409) { //user already exists
+        console.log(data.message);
         alert(data.message);
         setLogin(true);
       }
-      if (login && response.status === 200) {
+
+      else if (login && response.status === 200) {
         const { username, email, role, customUsername, picture } = data;
         setUser({
           username,
@@ -112,6 +113,9 @@ const AuthForm: React.FC = () => {
           customUsername: "",
         });
         setIsAuthenticated(false);
+      } if(response.status === 500 ) {
+        alert("Internal server error");
+        return;
       }
     } catch {
       setUser({

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Prism from "prismjs";
-import { PiArrowArcRightDuotone, PiHandsClappingThin } from "react-icons/pi";
+import {  PiHandsClappingThin } from "react-icons/pi";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 import "prismjs/themes/prism-tomorrow.css";
 import { useParams } from "react-router-dom";

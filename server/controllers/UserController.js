@@ -18,7 +18,9 @@ const signupController = async (req, res) => {
     // Check for existing username and email
     const [existingUserEmail, existingUserName] = await Promise.all([
       USER.findOne({ email }),
-      USER.findOne({ username }),
+      USER.findOne({
+        $or: [{ username }, { customUsername: username }],
+      }),
     ]);
 
     if (existingUserEmail) {
@@ -28,7 +30,12 @@ const signupController = async (req, res) => {
       return res.status(409).json({ message: "Username already exists" });
     }
 
-    const newUser = new USER({ username, email, password });
+    const newUser = new USER({
+      username,
+      email,
+      password,
+      customUsername: username,
+    });
     await newUser.save();
 
     return res.status(201).json({ message: "User created successfully" });
