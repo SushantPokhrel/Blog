@@ -143,6 +143,7 @@ const googleController = async (req, res) => {
         username: name,
         picture,
         googleId,
+        customUsername:name
       });
       if (newUser.email.toLowerCase() === adminEmail.toLowerCase()) {
         newUser.role = "admin";
