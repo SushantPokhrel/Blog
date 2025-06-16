@@ -42,7 +42,7 @@ export default function DropdownMenuDemo({
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const handleDropdownCategory = (value: CategoryTypes) => {
-    console.log(value);
+    // console.log(value);
     if (setCategory) {
       setCategory(value);
     }
@@ -53,7 +53,7 @@ export default function DropdownMenuDemo({
         credentials: "include",
         method: "DELETE",
       });
-      console.log(response.ok);
+      // console.log(response.ok);
       if (!response.ok) {
         alert("Failed to delete post");
         return;
@@ -72,7 +72,7 @@ export default function DropdownMenuDemo({
     }
   };
   const handleDropdownOptions = (value: BlogPostOptions) => {
-    console.log(value);
+    // console.log(value);
     if (value === "edit") {
       navigate(`/editPost/${postId}`);
     } else if (value === "delete") {

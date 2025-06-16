@@ -44,7 +44,7 @@ const AuthForm: React.FC = () => {
             customUsername,
           });
           setIsAuthenticated(true);
-          console.log(picture);
+          // console.log(picture);
         } else {
           alert("Google Login failed, Try again");
         }
@@ -88,7 +88,7 @@ const AuthForm: React.FC = () => {
       if (response.status === 201) setLogin(true);
       else if (response.status === 409) {
         //user already exists
-        console.log(data.message);
+        // console.log(data.message);
         alert(data.message);
         setLogin(true);
       } else if (login && response.status === 200) {

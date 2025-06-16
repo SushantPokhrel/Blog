@@ -47,7 +47,7 @@ export const SavedPostsProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       const data = await response.json();
-      console.log("savedposts", data);
+      // console.log("savedposts", data);
       setSavedPosts(data);
     } catch (error) {
       console.error("Error fetching saved posts:", error);

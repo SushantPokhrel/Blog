@@ -106,7 +106,7 @@ const CreatePost: React.FC = () => {
         alert("Post submitted successfully!");
         const { post } = await res.json();
 
-        console.log(post);
+        // console.log(post);
         navigate(`/post/${post._id}`);
       } else {
         alert("Failed to submit post.");

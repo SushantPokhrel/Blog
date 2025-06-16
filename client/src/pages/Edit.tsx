@@ -94,7 +94,7 @@ const EditPost: React.FC = () => {
         alert("Post updated successfully!");
         const { post } = await res.json();
 
-        console.log(post);
+        // console.log(post);
         navigate(`/post/${post._id}`);
       } else {
         alert("Failed to submit post.");
@@ -116,7 +116,7 @@ const EditPost: React.FC = () => {
       credentials: "include",
     });
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     const { title, subTitle, tags, content, category, banner, authorName } =
       data;
     setBase64Img(banner);

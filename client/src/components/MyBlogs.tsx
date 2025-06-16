@@ -4,15 +4,13 @@ import PostCard from "./PostCard";
 import Loader from "./Loader";
 import NotFound from "./NotFound";
 import { useIndividualPostsContext } from "../contexts/IndividualPostsContext";
-import { usePostsContext } from "../contexts/PostsContext";
 
 const MyBlogs: React.FC = () => {
   const { user } = useAuthContext();
-  const { loadingPosts } = usePostsContext();
   const { individualPostsLoading, individualPosts } =
     useIndividualPostsContext();
-  console.log(individualPostsLoading);
-  if (loadingPosts) {
+  // console.log(individualPostsLoading);
+  if (individualPostsLoading) {
     return (
       <div className="min-h-screen flex justify-center items-center">
         <Loader />

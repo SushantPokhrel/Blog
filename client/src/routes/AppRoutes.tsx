@@ -19,7 +19,6 @@ import PublicRoute from "../routes/Public";
 const AppRoutes = () => {
   const location = useLocation();
 
-  console.log(location.pathname);
   return (
     <>
       <Routes>

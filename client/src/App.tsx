@@ -8,6 +8,11 @@ import { PostsProvider } from "./contexts/PostsContext";
 import { IndividualPostsProvider } from "./contexts/IndividualPostsContext";
 import { SavedPostsProvider } from "./contexts/SavedPostsContext";
 function App() {
+  console.log(
+    "%cHey there, curious developer! 👀\n%cWelcome to the code side of things.",
+    "font-size: 18px; font-weight: bold; color: #00C9A7; text-shadow: 1px 1px 1px #000;",
+    "font-size: 14px; color: #888; font-style: italic;"
+  );
   return (
     <>
       <AuthContextProvider>

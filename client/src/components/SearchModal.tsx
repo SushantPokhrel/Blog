@@ -41,7 +41,7 @@ const SearchModal = () => {
       clearTimeout(idRef.current); // clearing previous timeout delay
     }
     setLoading(true);
-    console.log(e.target.value);
+    // console.log(e.target.value);
     // this will allow execution of the api call only after 300ms of each key press
     // this helps in reducing api call on every key press which causes performance issues
     idRef.current = setTimeout(() => {
@@ -57,12 +57,12 @@ const SearchModal = () => {
           return res.json();
         })
         .then((data) => {
-          console.log("Search results:", data);
+          // console.log("Search results:", data);
           setIsFound(true);
           setSearchedPosts(data);
         })
         .catch((e) => {
-          console.log(e.message);
+          console.log(e);
           setIsFound(false);
           setSearchedPosts([]);
         })

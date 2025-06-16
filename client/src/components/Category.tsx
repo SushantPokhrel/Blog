@@ -36,7 +36,7 @@ const Category = () => {
     if (!ulRef.current) return;
 
     const scrollAmount = 150;
-    console.log(ulRef.current.scrollLeft);
+    // console.log(ulRef.current.scrollLeft);
     if (direction === "left") {
       ulRef.current.scrollLeft -= scrollAmount;
     } else if (direction === "right") {

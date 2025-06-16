@@ -45,7 +45,7 @@ const Comment: React.FC<Props> = ({ setComments, postId }) => {
       }
 
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
 
       const { content, username, picture, _id } = data._doc;
 

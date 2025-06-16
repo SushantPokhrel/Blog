@@ -34,7 +34,6 @@ type PostType = {
 function UserPost() {
   const { id } = useParams();
   const { scrollYProgress } = useScroll();
-  console.log(scrollYProgress);
   const [post, setPost] = useState<PostType>({
     title: "",
     banner: "",
@@ -90,7 +89,6 @@ function UserPost() {
       credentials: "include",
     });
     const data = await response.json();
-    console.log(data);
     // const { content, username, picture, _id } = data;
     setComments(data);
   };
@@ -100,12 +98,16 @@ function UserPost() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setPost(data);
         setLikeCount(data.likeCount); // Initialize likeCount here
         setIsLiked(data.isLiked);
       })
-      .catch((e) => console.log(e.message))
+      .catch((e) => {
+        // console.log(e.message)
+        console.log(e)
+        alert("Network error")
+      })
       .finally(() => {
         setLoading(false);
       });
@@ -136,12 +138,12 @@ function UserPost() {
         method: "POST",
       });
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
 
       setLikeCount(data.likes); // Only update likeCount here
       setIsLiked(data.liked);
     } catch (error) {
-      console.log(error);
+      alert("Network error");
     }
   };
 
