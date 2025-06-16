@@ -4,10 +4,12 @@ import { IoMdClose } from "react-icons/io"; // Close icon
 import { FaPenClip } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import { IoPersonOutline } from "react-icons/io5";
+import { IoIosCheckmark } from "react-icons/io";
 
 import Button from "./Button";
-import { useUserContext } from "../contexts/UserContext";
-import DialogDemo from "./Modal";
+import { usePostsContext } from "../contexts/PostsContext";
+import { useAuthContext } from "../contexts/AuthContext";
+import SearchModal from "./SearchModal";
 
 const Nav: React.FC = () => {
   const topics = [
@@ -22,8 +24,8 @@ const Nav: React.FC = () => {
     "Internet of Things (IoT)",
     "UI/UX Design",
   ];
-  const { isAuthenticated, setCategory } = useUserContext();
-
+  const { setCategory } = usePostsContext();
+  const { isAuthenticated } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const handleToggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -49,13 +51,19 @@ const Nav: React.FC = () => {
   }, [isOpen]);
   return (
     <nav className=" flex justify-between p-3 sticky top-0 z-40 items-center shadow-sm shadow-gray-100 bg-white md:px-6">
-      <div className="flex items-center cursor-pointer logo-name text-lg md:text-xl font-semibold">
-        <Link to="/" onClick={() => setCategory("For You")}>
-          <span className="text-blue-400">Vibe</span>Write
+      <div className="flex items-center cursor-pointer logo-name  text-sm md:text-lg  ">
+        <Link
+          to="/"
+          onClick={() => setCategory("For You")}
+          className="flex items-center gap-0.5"
+        >
+          <span>Dev</span>
+          <span className="text-blue-500">Writes</span>
+          <IoIosCheckmark className="size-6 " />
         </Link>
       </div>
       <div className="flex gap-1.5 md:gap-2  items-center">
-        {isAuthenticated && <DialogDemo />}
+        {isAuthenticated && <SearchModal />}
         {isAuthenticated && (
           <Link
             to="/createPost"

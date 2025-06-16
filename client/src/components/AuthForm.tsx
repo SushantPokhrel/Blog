@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useGoogleLogin } from "@react-oauth/google";
-import { useUserContext } from "../contexts/UserContext";
+import { useAuthContext } from "../contexts/AuthContext";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 const oauthRedirectUrl = import.meta.env.VITE_OAUTH_REDIRECT_URL;
 import Button from "./Button";
@@ -19,7 +19,7 @@ const AuthForm: React.FC = () => {
     email: "",
     password: "",
   });
-  const { setIsAuthenticated, setUser } = useUserContext();
+  const { setIsAuthenticated, setUser } = useAuthContext();
   const focusRef = useRef<HTMLButtonElement | null>(null);
 
   // google login function
@@ -86,13 +86,12 @@ const AuthForm: React.FC = () => {
       });
       const data = await response.json();
       if (response.status === 201) setLogin(true);
-     else if (response.status === 409) { //user already exists
+      else if (response.status === 409) {
+        //user already exists
         console.log(data.message);
         alert(data.message);
         setLogin(true);
-      }
-
-      else if (login && response.status === 200) {
+      } else if (login && response.status === 200) {
         const { username, email, role, customUsername, picture } = data;
         setUser({
           username,
@@ -113,7 +112,8 @@ const AuthForm: React.FC = () => {
           customUsername: "",
         });
         setIsAuthenticated(false);
-      } if(response.status === 500 ) {
+      }
+      if (response.status === 500) {
         alert("Internal server error");
         return;
       }

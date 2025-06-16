@@ -1,10 +1,10 @@
 import React from "react";
-import { useUserContext } from "../contexts/UserContext";
+import { usePostsContext } from "../contexts/PostsContext";
 
 import Loader from "./Loader";
 import PostCard from "./PostCard";
 const Posts: React.FC = () => {
-  const { posts, categoryPostsLoading } = useUserContext();
+  const { posts, categoryPostsLoading } = usePostsContext();
 
   if (categoryPostsLoading) {
     return (

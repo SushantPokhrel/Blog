@@ -14,7 +14,7 @@
     background-color: rgb(19, 19, 19); /* or just background: #2c2c2c; */
   }
   body::-webkit-scrollbar-thumb {
-    background-color: rgb(90, 90, 90); 
+    background-color: rgb(124, 123, 123); 
     border-radius: 10px;
   }
   .scrollbar-none::-webkit-scrollbar {
@@ -92,7 +92,7 @@
 }
 
 .refLink {
-  @apply text-blue-500 underline text-sm;
+  @apply text-blue-500 underline font-semibold text-sm;
 }
 @media (max-width: 425px) {
   .ck-content h1,

@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
-import { useUserContext } from "../contexts/UserContext";
-
+import { useAuthContext } from "../contexts/AuthContext";
+import { IoIosCheckmark } from "react-icons/io";
 const Footer = () => {
-  const { isAuthenticated } = useUserContext();
+  const { isAuthenticated } = useAuthContext();
   if (!isAuthenticated) return null;
   return (
     <div className="border-t border-t-gray-100 px-4 py-5   md:border-none ">
       <footer className="flex flex-col max-w-4xl mx-auto gap-4 md:gap-6 md:flex-row md:justify-between md:py-24 md:max-w-5xl md:mx-auto">
-        <p className="text-sm font-light md:text-base text-gray-700">
-          &copy; {new Date().getFullYear()} VibeWrite, made with ❤️ for a better
-          web.
+        <p className="text-sm font-light md:text-base text-gray-700 flex ">
+        <span> &copy; {new Date().getFullYear()} Dev Writes{" "}</span> 
+          <IoIosCheckmark className="size-6" />
         </p>
         <div>
           <p className="text-sm md:text-base font-normal">SITE LINKS</p>
@@ -56,7 +56,7 @@ const Footer = () => {
             </li>
             <li>
               <a
-                href="https://github.com/yourblog"
+                href="https://github.com/SushantPokhrel"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -65,7 +65,7 @@ const Footer = () => {
             </li>
             <li>
               <a
-                href="https://linkedin.com/in/yourblog"
+                href="https://www.linkedin.com/in/sushant-pokhrel-33436928b/"
                 target="_blank"
                 rel="noopener noreferrer"
               >

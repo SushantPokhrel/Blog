@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useUserContext } from "../contexts/UserContext";
+import { useAuthContext } from "../contexts/AuthContext";
 import { Outlet, NavLink } from "react-router-dom";
 import { returnIcons } from "../Utilities/ReturnIcons";
 import { IoMdClose } from "react-icons/io"; // Close icon
 import { MdOutlineMenuOpen } from "react-icons/md";
 
 const Dashboard: React.FC = () => {
-  const { user } = useUserContext();
-  const linksUser = ["Profile", "MyBlogs", "CreateNew","SavedPosts"];
+  const { user } = useAuthContext();
+  const linksUser = ["Profile", "MyBlogs", "CreateNew", "SavedPosts"];
   const linksAdmin = [...linksUser, "AllUsers", "AllPosts", "Analytics"];
   const [isOpen, setIsOpen] = useState(false);
   // Function to render NavLinks based on item

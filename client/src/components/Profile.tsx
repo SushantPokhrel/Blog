@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useUserContext } from "../contexts/UserContext";
 import Loader from "./Loader";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../contexts/AuthContext";
 
 const MAX_FILE_SIZE_MB = 1; // 1MB limit
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -10,7 +10,7 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const { user, setUser, setIsAuthenticated } = useUserContext();
+  const { user, setUser, setIsAuthenticated } = useAuthContext();
 
   const [savingUsername, setSavingUsername] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -137,7 +137,7 @@ const Profile: React.FC = () => {
                   "https://www.iprcenter.gov/image-repository/blank-profile-picture.png/@@images/image.png"
                 }
                 alt="profile"
-                className="text-center hover:opacity-75 active:opacity-75 w-28 h-28 text-xs italic object-cover rounded-full "
+                className="text-center hover:opacity-75 active:opacity-75 w-20 h-20 text-xs italic object-cover rounded-full "
               />
             </label>
           )}

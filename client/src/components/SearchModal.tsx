@@ -17,7 +17,7 @@ type Post = {
   createdAt: string;
   likeCount: number;
 };
-const DialogDemo = () => {
+const SearchModal = () => {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [isFound, setIsFound] = useState(false);
@@ -136,4 +136,4 @@ const DialogDemo = () => {
   );
 };
 
-export default DialogDemo;
+export default SearchModal;

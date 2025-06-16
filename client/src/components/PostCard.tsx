@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { PiHandsClappingThin } from "react-icons/pi";
 import DropdownMenuDemo from "./Dropdown";
 import { MdLibraryAdd, MdLibraryAddCheck } from "react-icons/md";
-import { useUserContext } from "../contexts/UserContext";
+import { useSavedPostsContext } from "../contexts/SavedPostsContext";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 type Post = {
@@ -26,7 +26,7 @@ type Props = {
 type BlogPostOptions = "edit" | "delete" | "author info";
 
 const PostCard: React.FC<Props> = ({ post, hideOption }) => {
-  const { setSavedPosts, savedIds } = useUserContext();
+  const { setSavedPosts, savedIds } = useSavedPostsContext();
   const [saved, setSaved] = useState(false);
 
   const navigate = useNavigate();

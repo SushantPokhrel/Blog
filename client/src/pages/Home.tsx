@@ -1,11 +1,11 @@
-import { useUserContext } from "../contexts/UserContext";
+import { usePostsContext } from "../contexts/PostsContext";
 import NotFound from "../components/NotFound";
 import Loader from "../components/Loader";
 import Category from "../components/Category";
 import Posts from "../components/Posts";
 
 function Home() {
-  const { posts, loadingPosts,} = useUserContext();
+  const { posts, loadingPosts,} = usePostsContext();
 
   if (loadingPosts)
     return (

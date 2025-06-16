@@ -8,6 +8,7 @@ type CommentTypes = {
   content: string;
   _id: string;
 };
+
 type Props = {
   setComments: React.Dispatch<React.SetStateAction<CommentTypes[]>>;
   postId: string | undefined;
@@ -15,10 +16,15 @@ type Props = {
 
 const Comment: React.FC<Props> = ({ setComments, postId }) => {
   const [commentContent, setCommentContent] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (commentContent.trim() === "") return;
+
+    setLoading(true);
+    alert("Submitting your comment...");
 
     try {
       const res = await fetch(`${backendUrl}/api/comments/${postId}`, {
@@ -34,6 +40,7 @@ const Comment: React.FC<Props> = ({ setComments, postId }) => {
 
       if (!res.ok) {
         alert("Failed to post a comment");
+        setLoading(false);
         return;
       }
 
@@ -56,6 +63,8 @@ const Comment: React.FC<Props> = ({ setComments, postId }) => {
     } catch (error) {
       console.error("Error posting comment:", error);
       alert("An error occurred while posting the comment. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,12 +79,14 @@ const Comment: React.FC<Props> = ({ setComments, postId }) => {
           name="comment"
           id="comment"
           className=" bg-gray-200 text-sm w-full p-2 outline-0 border border-blue-400  rounded-sm max-h-32  min-h-10 focus:border-blue-600"
+          disabled={loading}
         ></textarea>
         <Button
           type="submit"
-          className="text-sm bg-blue-600 text-white px-3 py-2 md:px-4.5 hover:bg-blue-700"
+          className="text-sm bg-blue-600 text-white px-3 py-2 md:px-4.5 hover:bg-blue-700 disabled:opacity-50"
+          disabled={loading}
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </Button>
       </div>
     </form>

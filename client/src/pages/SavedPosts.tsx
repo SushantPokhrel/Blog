@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
-import { useUserContext } from "../contexts/UserContext";
+import { useSavedPostsContext } from "../contexts/SavedPostsContext";
 import PostCard from "../components/PostCard";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
+import { useAuthContext } from "../contexts/AuthContext";
 const SavedPosts: React.FC = () => {
-  const { user, savedPosts, fetchSavedPosts, savedPostsLoading } =
-    useUserContext();
-
+  const { savedPosts, fetchSavedPosts, savedPostsLoading } = useSavedPostsContext();
+  const { user } = useAuthContext();
   useEffect(() => {
     if (user.email) {
       fetchSavedPosts(user.email);
@@ -22,7 +22,9 @@ const SavedPosts: React.FC = () => {
         </div>
       ) : savedPosts.length ? (
         <div>
-          <h1 className="text-lg md:text-2xl font-semibold text-gray-700">Reading List</h1>
+          <h1 className="text-lg md:text-2xl font-semibold text-gray-700">
+            Reading List
+          </h1>
           <span className="text-xs">-{user.username}</span>
         </div>
       ) : (

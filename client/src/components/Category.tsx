@@ -1,6 +1,6 @@
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { useEffect, useRef } from "react";
-import { useUserContext } from "../contexts/UserContext";
+import { usePostsContext } from "../contexts/PostsContext";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 const topics = [
@@ -19,7 +19,7 @@ const topics = [
 
 const Category = () => {
   const ulRef = useRef<HTMLUListElement | null>(null);
-  const { fetchPosts, setCategory, category } = useUserContext();
+  const { fetchPosts, setCategory, category } = usePostsContext();
   const location = useLocation();
   const [_, setSearchParams] = useSearchParams(location.search);
   const handleCategory = (value: string) => {

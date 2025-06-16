@@ -1,12 +1,17 @@
 import React from "react";
-import { useUserContext } from "../contexts/UserContext";
+import { useAuthContext } from "../contexts/AuthContext";
 import PostCard from "./PostCard";
 import Loader from "./Loader";
 import NotFound from "./NotFound";
+import { useIndividualPostsContext } from "../contexts/IndividualPostsContext";
+import { usePostsContext } from "../contexts/PostsContext";
 
 const MyBlogs: React.FC = () => {
-  const { individualPosts, loadingPosts,user } = useUserContext();
-console.log(individualPosts)
+  const { user } = useAuthContext();
+  const { loadingPosts } = usePostsContext();
+  const { individualPostsLoading, individualPosts } =
+    useIndividualPostsContext();
+  console.log(individualPostsLoading);
   if (loadingPosts) {
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -21,7 +26,9 @@ console.log(individualPosts)
   return (
     <div className="flex flex-col gap-6 max-w-3xl md:px-2 mx-auto ">
       <div>
-        <h1 className="text-lg md:text-2xl font-semibold text-gray-700">Your posts</h1>
+        <h1 className="text-lg md:text-2xl font-semibold text-gray-700">
+          Your posts
+        </h1>
         <span className="text-xs ">-{user.username}</span>
       </div>
       {individualPosts.map((post) => (

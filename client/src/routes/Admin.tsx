@@ -1,11 +1,11 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useUserContext } from "../contexts/UserContext";
+import { useAuthContext } from "../contexts/AuthContext";
 type Props = {
   children: React.ReactNode;
 };
 const Admin: React.FC<Props> = ({ children }) => {
-  const { user } = useUserContext();
+  const { user } = useAuthContext();
   return user.role === "admin" ? children : <Navigate to="/*" replace />; // replaces the protected route
 };
 

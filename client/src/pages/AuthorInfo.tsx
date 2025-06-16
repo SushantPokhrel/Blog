@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Loader from "../components/Loader";
-import { useUserContext } from "../contexts/UserContext";
-
+import { usePostsContext } from "../contexts/PostsContext";
+import Button from "../components/Button";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 type AuthorInfo = {
@@ -26,7 +26,7 @@ Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
   });
 
   const [loading, setLoading] = useState<boolean>(true);
-  const { fetchPosts } = useUserContext();
+  const { fetchPosts } = usePostsContext();
 
   const getAuthorInfo = async () => {
     try {
@@ -53,42 +53,44 @@ Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
   useEffect(() => {
     getAuthorInfo();
     fetchPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
-        <Loader />
+      <div className="flex min-h-screen justify-center items-center">
+        <Loader />;
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 to-white px-4">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-6 md:p-8">
-        <div className="flex flex-col items-center text-center">
-          <div className="relative w-28 h-28 mb-4">
-            <img
-              src={authorInfo.profilePicture || fallbackImg}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = fallbackImg;
-              }}
-              alt="Author"
-              className="rounded-full w-full h-full object-cover ring-4 ring-blue-100 shadow-md"
-            />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800">
+    <div className="max-w-2xl text-gray-700 mx-auto   p-6 my-36 bg-gray-100 rounded-md ">
+      <div className="flex flex-col md:flex-row  items-center md:items-start text-center md:text-left justify-center  gap-6">
+        <img
+          src={authorInfo.profilePicture || fallbackImg}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = fallbackImg;
+          }}
+          alt="Author"
+          className="w-18 h-18 rounded-full object-cover shadow-md ring-2 ring-blue-100"
+        />
+        <div className="flex flex-col">
+          <h2 className=" text-xl md:text-2xl font-bold text-gray-800">
             {authorInfo.customUsername}
           </h2>
-          <p className="text-gray-500 text-sm mt-1">{authorInfo.email}</p>
+          <p className="text-sm text-gray-500 mt-1">{authorInfo.email}</p>
+          {authorInfo.description && (
+            <p className="mt-6 text-sm leading-relaxed text-gray-700">
+              {authorInfo.description}
+            </p>
+          )}
+          <div className="mt-2.5">
+            <Button
+              children="Get in touch"
+              className="py-2.5 text-xs px-4.5 rounded-md bg-blue-700 hover:bg-blue-600 text-white active:bg-blue-600"
+            />
+          </div>
         </div>
-
-        {authorInfo.description && (
-          <p className="mt-6 text-gray-700 text-sm leading-relaxed text-center">
-            {authorInfo.description}
-          </p>
-        )}
       </div>
     </div>
   );

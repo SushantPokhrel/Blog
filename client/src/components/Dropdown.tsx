@@ -1,7 +1,10 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import type React from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserContext } from "../contexts/UserContext";
+import { usePostsContext } from "../contexts/PostsContext";
+import { useIndividualPostsContext } from "../contexts/IndividualPostsContext";
+import { UserModal } from "./UserModal";
+import { useState } from "react";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 type CategoryTypes =
   | "Web Development"
@@ -33,9 +36,11 @@ export default function DropdownMenuDemo({
   hideOption,
   postId,
 }: Props) {
-  const { setPosts, setIndividualPosts } = useUserContext();
+  const { setPosts } = usePostsContext();
+  const { setIndividualPosts } = useIndividualPostsContext();
   const hiddenOptions = ["edit", "delete"];
   const navigate = useNavigate();
+  const [show, setShow] = useState(false);
   const handleDropdownCategory = (value: CategoryTypes) => {
     console.log(value);
     if (setCategory) {
@@ -73,46 +78,52 @@ export default function DropdownMenuDemo({
     } else if (value === "delete") {
       handleDeletePost();
     } else {
-      navigate(`/author/${postId}`);
+      setShow(true);
     }
   };
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>{TriggerChild}</DropdownMenu.Trigger>
+    <>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild>{TriggerChild}</DropdownMenu.Trigger>
 
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className="bg-white text-black shadow-md p-2 rounded-md"
-          side="top"
-          sideOffset={-4}
-          align="start"
-          onClick={(e) => e.preventDefault()}
-        >
-          {topics?.map((topic) => (
-            <DropdownMenu.Item
-              key={topic}
-              onSelect={() => handleDropdownCategory(topic)}
-              className="p-1.5 mb-1 cursor-pointer hover:bg-gray-100 active:bg-gray-100  outline-0  rounded text-sm"
-            >
-              {topic}
-            </DropdownMenu.Item>
-          ))}
-          {postcardOptions?.map((option) => {
-            if (hideOption && hiddenOptions.includes(option)) {
-              return null;
-            }
-            return (
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            className="bg-white text-black shadow-md p-2 rounded-md"
+            side="top"
+            sideOffset={-4}
+            align="start"
+            onClick={(e) => e.preventDefault()}
+          >
+            {topics?.map((topic) => (
               <DropdownMenu.Item
-                key={option}
-                onSelect={() => handleDropdownOptions(option)}
-                className="p-1.5 md:mb-1  cursor-pointer hover:bg-gray-100 active:bg-gray-100  outline-0  rounded text-sm"
+                key={topic}
+                onSelect={() => handleDropdownCategory(topic)}
+                className="p-1.5 mb-1 cursor-pointer hover:bg-gray-100 active:bg-gray-100  outline-0  rounded text-sm"
               >
-                {option}
+                {topic}
               </DropdownMenu.Item>
-            );
-          })}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+            ))}
+            {postcardOptions?.map((option) => {
+              if (hideOption && hiddenOptions.includes(option)) {
+                return null;
+              }
+              return (
+                <DropdownMenu.Item
+                  key={option}
+                  onSelect={() => handleDropdownOptions(option)}
+                  className="p-1.5 md:mb-1  cursor-pointer hover:bg-gray-100 active:bg-gray-100  outline-0  rounded text-sm"
+                >
+                  {option}
+                </DropdownMenu.Item>
+              );
+            })}
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+
+      <div onClick={e=>e.preventDefault()}>
+        <UserModal show={show} setShow={setShow} postId={postId}/>
+      </div>
+    </>
   );
 }

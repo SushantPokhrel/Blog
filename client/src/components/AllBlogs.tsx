@@ -1,10 +1,10 @@
 import React from "react";
-import { useUserContext } from "../contexts/UserContext";
+import { usePostsContext } from "../contexts/PostsContext";
 import NotFound from "../components/NotFound";
 import Loader from "../components/Loader";
 import PostCard from "./PostCard";
 const AllBlogs: React.FC = () => {
-  const { posts, loadingPosts } = useUserContext();
+  const { posts, loadingPosts } = usePostsContext();
 
   if (loadingPosts)
     return (
