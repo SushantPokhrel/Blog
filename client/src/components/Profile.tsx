@@ -33,6 +33,7 @@ const Profile: React.FC = () => {
           username: "",
           profilePhoto: "",
           role: "",
+          userId:""
         });
         alert("User logged out successfully");
         navigate("/user/auth");
