@@ -65,7 +65,7 @@ const Category = () => {
       <div className="container">
         <ul
           ref={ulRef}
-          className="flex gap-5 overflow-x-scroll scrollbar-none "
+          className="flex gap-5 overflow-x-scroll scrollbar-none category"
         >
           {topics.map((topic) => (
             <li

@@ -34,10 +34,12 @@ const capitalizeAfterSpace = (str: string) =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
-  const [categoryPostsLoading, setCategoryPostsLoading] = useState(true);
+  const [categoryPostsLoading, setCategoryPostsLoading] = useState(false);
   const [category, setCategory] = useState(() => {
     const searchParams = new URLSearchParams(location.search);
     return searchParams.get("category") || "For You";
@@ -54,6 +56,7 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       );
       if (!res.ok) throw new Error("Failed to fetch posts");
       const data = await res.json();
+      // console.log(data);
       setPosts(data);
     } catch (err) {
       console.error("Error fetching posts:", err);
@@ -64,12 +67,21 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   useEffect(() => {
+    // console.log(category);
     fetchPosts();
   }, [category]);
 
   return (
     <PostsContext.Provider
-      value={{ posts, setPosts, loadingPosts, category, setCategory, fetchPosts, categoryPostsLoading }}
+      value={{
+        posts,
+        setPosts,
+        loadingPosts,
+        category,
+        setCategory,
+        fetchPosts,
+        categoryPostsLoading,
+      }}
     >
       {children}
     </PostsContext.Provider>
@@ -78,6 +90,7 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 export const usePostsContext = () => {
   const context = useContext(PostsContext);
-  if (!context) throw new Error("usePostsContext must be used within PostsProvider");
+  if (!context)
+    throw new Error("usePostsContext must be used within PostsProvider");
   return context;
 };

@@ -9,6 +9,9 @@ import Loader from "../components/Loader";
 import NotFound from "../components/NotFound";
 import MemoizedContentDisplay from "../components/BlogContentMemoized";
 import Comment from "../components/Comment";
+import { useAuthContext } from "../contexts/AuthContext";
+import { socket } from "../Socket";
+
 type CommentTypes = {
   username: string;
   picture: string;
@@ -32,6 +35,7 @@ type PostType = {
 };
 
 function UserPost() {
+  const { user } = useAuthContext();
   const { id } = useParams();
   const { scrollYProgress } = useScroll();
   const [post, setPost] = useState<PostType>({
@@ -51,7 +55,7 @@ function UserPost() {
   const [loading, setLoading] = useState(true);
   const [wordCount, setWordCount] = useState(0);
   const [date, setDate] = useState("");
-  const [likeCount, setLikeCount] = useState(0); // Separate state for likes
+  const [likeCount, setLikeCount] = useState(0);
   const [isLiked, setIsLiked] = useState(post.isLiked);
   const [comments, setComments] = useState<CommentTypes[]>([
     {
@@ -84,38 +88,35 @@ function UserPost() {
     "Nov",
     "Dec",
   ];
+
   const fetchComments = async () => {
     const response = await fetch(`${backendUrl}/api/comments/all/${id}`, {
       credentials: "include",
     });
     const data = await response.json();
-    // const { content, username, picture, _id } = data;
     setComments(data);
   };
+
   useEffect(() => {
     fetch(`${backendUrl}/api/posts/${id}`, {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
         setPost(data);
-        setLikeCount(data.likeCount); // Initialize likeCount here
+        setLikeCount(data.likeCount);
         setIsLiked(data.isLiked);
       })
       .catch((e) => {
-        // console.log(e.message)
-        console.log(e)
-        alert("Network error")
+        console.log(e);
+        alert("Network error");
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [id]);
-
-  useEffect(() => {
     fetchComments();
   }, [id]);
+
   useEffect(() => {
     const d = new Date(post.createdAt);
     const day = d.getDate().toString().padStart(2, "0");
@@ -128,20 +129,32 @@ function UserPost() {
     const textContent = newDiv.textContent || newDiv.innerText || "";
     setWordCount(textContent.split(/\s+/).length);
   }, [post]);
+
   useEffect(() => {
     Prism.highlightAll();
   }, [post.content]);
+
   const handleLikes = async () => {
+    if (user.userId === post.author) {
+      return alert("You cannot like your own post");
+    }
     try {
       const response = await fetch(`${backendUrl}/api/posts/liked/${id}`, {
         credentials: "include",
         method: "POST",
       });
       const data = await response.json();
-      // console.log(data);
-
-      setLikeCount(data.likes); // Only update likeCount here
+      setLikeCount(data.likes);
       setIsLiked(data.liked);
+      if (data.liked) {
+        socket.emit("postLiked", {
+          likedByName: user.username,
+          postOwnerName: post.authorName,
+          postTitle: post.title,
+          likes: data.likes,
+          postOwnerID:post.author
+        });
+      }
     } catch (error) {
       alert("Network error");
     }
@@ -150,6 +163,7 @@ function UserPost() {
   if (!loading && !post._id) {
     return <NotFound children="Home" />;
   }
+
   if (loading)
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -228,6 +242,7 @@ function UserPost() {
             content={post.content}
             className=" post-display"
           />
+
           <div className="extra border-b border-b-gray-200 flex justify-between">
             <span
               className="flex gap-1 justify-start items-center active:bg-blue-200 p-2 cursor-pointer"
@@ -244,7 +259,9 @@ function UserPost() {
             </span>
             <span>...</span>
           </div>
+
           <Comment setComments={setComments} postId={id} />
+
           <div className="show-comments flex flex-col gap-4 ">
             {comments.length
               ? comments.map((comment) => (

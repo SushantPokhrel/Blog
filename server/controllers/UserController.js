@@ -134,7 +134,7 @@ const googleController = async (req, res) => {
 
     const payload = ticket.getPayload();
     const { email, name, picture, sub: googleId } = payload;
-    console.log(picture);
+    // console.log(picture);
     let existingUser = await USER.findOne({ email });
 
     if (!existingUser) {
@@ -325,7 +325,7 @@ const getUserDetails = async (req, res) => {
   const { postId } = req.params;
   const post = await POST.findById(postId).populate("author");
   const user = post.author;
-  console.log(user);
+  // console.log(user);
   return res.status(200).json(user);
 };
 const logout = async (req, res) => {

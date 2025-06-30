@@ -10,6 +10,7 @@ import Button from "./Button";
 import { usePostsContext } from "../contexts/PostsContext";
 import { useAuthContext } from "../contexts/AuthContext";
 import SearchModal from "./SearchModal";
+import { ToolTip } from "./ToolTip";
 
 const Nav: React.FC = () => {
   const topics = [
@@ -25,7 +26,7 @@ const Nav: React.FC = () => {
     "UI/UX Design",
   ];
   const { setCategory } = usePostsContext();
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated, notifications } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const handleToggleMenu = () => {
     setIsOpen((prev) => !prev);
@@ -35,7 +36,6 @@ const Nav: React.FC = () => {
   const handleCategory = (value: string) => {
     setCategory(value);
 
-    // Build the new URL with the search params you want
     navigate({
       pathname: "/", // explicitly navigate to `/`
     });
@@ -55,7 +55,7 @@ const Nav: React.FC = () => {
         <Link
           to="/"
           onClick={() => setCategory("For You")}
-          className="flex items-center gap-0.5"
+          className="flex items-center"
         >
           <span>Dev</span>
           <span className="text-blue-500">Writes</span>
@@ -74,7 +74,7 @@ const Nav: React.FC = () => {
         )}
         {isAuthenticated && (
           <div
-            className="hamburger-menu p-2 rounded-sm active:bg-blue-200 text-gray-500 md:hidden"
+            className="hamburger-menu p-2 cursor-pointer rounded-sm active:bg-blue-200 text-gray-500 md:hidden"
             onClick={handleToggleMenu}
           >
             <HiMiniBars3 className="size-5" />
@@ -84,9 +84,10 @@ const Nav: React.FC = () => {
           <Link
             to="/dashboard"
             onClick={() => setIsOpen(false)}
-            className="hidden md:inline-block p-1.5 rounded-sm active:bg-blue-200 text-gray-500 hover:text-gray-700"
+            className="hidden  relative md:inline-block p-1.5 rounded-sm active:bg-blue-200 text-gray-500 hover:text-gray-700"
           >
             <IoPersonOutline className="size-4 " />
+            {notifications.length ? <ToolTip />:null }
           </Link>
         )}
       </div>
@@ -105,7 +106,7 @@ const Nav: React.FC = () => {
       >
         <div className="flex justify-end">
           <div
-            className="p-2 active:bg-blue-200 text-gray-500 "
+            className="p-2 active:bg-blue-200 cursor-pointer text-gray-500 "
             onClick={handleToggleMenu}
           >
             <IoMdClose className="size-5" />
@@ -134,9 +135,10 @@ const Nav: React.FC = () => {
             <Link
               to="/dashboard"
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-sm active:bg-blue-200 text-gray-500"
+              className="p-1.5 relative rounded-sm active:bg-blue-200 text-gray-500"
             >
               <IoPersonOutline className="size-5 " />
+            {notifications.length ? <ToolTip />:null }
             </Link>
           </div>
         ) : (

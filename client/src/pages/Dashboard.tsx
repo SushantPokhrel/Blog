@@ -7,7 +7,7 @@ import { MdOutlineMenuOpen } from "react-icons/md";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuthContext();
-  const linksUser = ["Profile", "MyBlogs", "CreateNew", "SavedPosts"];
+  const linksUser = ["Profile", "MyBlogs", "CreateNew", "SavedPosts","Notifications"];
   const linksAdmin = [...linksUser, "AllUsers", "AllPosts", "Analytics"];
   const [isOpen, setIsOpen] = useState(false);
   // Function to render NavLinks based on item

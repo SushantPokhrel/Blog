@@ -35,13 +35,15 @@ const AuthForm: React.FC = () => {
         });
         const data = await response.json();
         if (response.ok) {
-          const { username, email, picture, role, customUsername } = data;
+          const { username, email, picture, role, customUsername, user_id } =
+            data;
           setUser({
             username,
             email,
             profilePhoto: picture,
             role,
             customUsername,
+            userId: user_id,
           });
           setIsAuthenticated(true);
           // console.log(picture);
@@ -92,13 +94,15 @@ const AuthForm: React.FC = () => {
         alert(data.message);
         setLogin(true);
       } else if (login && response.status === 200) {
-        const { username, email, role, customUsername, picture } = data;
+        const { username, email, role, customUsername, picture, user_id } =
+          data;
         setUser({
           username,
           email,
           role,
           customUsername,
           profilePhoto: picture,
+          userId: user_id,
         });
         setIsAuthenticated(true);
       }
@@ -110,6 +114,7 @@ const AuthForm: React.FC = () => {
           profilePhoto: "",
           role: "",
           customUsername: "",
+          userId: "",
         });
         setIsAuthenticated(false);
       }
@@ -124,6 +129,7 @@ const AuthForm: React.FC = () => {
         profilePhoto: "",
         role: "",
         customUsername: "",
+        userId: "",
       });
       setIsAuthenticated(false);
     } finally {

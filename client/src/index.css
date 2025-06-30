@@ -14,13 +14,18 @@
     background-color: rgb(19, 19, 19); /* or just background: #2c2c2c; */
   }
   body::-webkit-scrollbar-thumb {
-    background-color: rgb(124, 123, 123); 
+    background-color: rgb(124, 123, 123);
     border-radius: 10px;
   }
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
-
+  .category {
+    scrollbar-width: none;
+  }
+  .category::-webkit-scrollbar {
+    display: none;
+  }
   .scrollbar-none {
     scroll-behavior: smooth;
   }

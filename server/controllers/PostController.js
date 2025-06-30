@@ -54,7 +54,7 @@ const createPost = async (req, res) => {
     });
 
     const savedPost = await newPost.save();
-    console.log(savedPost.title);
+    // console.log(savedPost.title);
     res
       .status(201)
       .json({ message: "Post created successfully", post: savedPost });
@@ -104,8 +104,8 @@ const editPostById = async (req, res) => {
   const user_id = req.user.user_id;
   try {
     const oldPost = await postSchema.findById(postId);
-    console.log(oldPost);
-    console.log(oldPost.author);
+    // console.log(oldPost);
+    // console.log(oldPost.author);
     if (oldPost.author.toString() !== user_id && req.user.role !== "admin") {
       return res.status(403).json({ message: "Forbidden" });
     }
@@ -121,7 +121,7 @@ const editPostById = async (req, res) => {
       },
       { new: true, runValidators: true } // returns updated and validated post
     );
-    console.log(updatedPost.subTitle);
+    // console.log(updatedPost.subTitle);
     return res
       .status(200)
       .json({ message: "Post updated successfully", post: updatedPost });
@@ -137,8 +137,8 @@ const deletePostById = async (req, res) => {
   const user_id = req.user.user_id;
   try {
     const oldPost = await postSchema.findById(postId);
-    console.log(oldPost);
-    console.log(oldPost.author);
+    // console.log(oldPost);
+    // console.log(oldPost.author);
     if (oldPost.author.toString() !== user_id && req.user.role !== "admin") {
       return res.status(403).json({ message: "Forbidden" });
     }
@@ -186,7 +186,7 @@ const updatedPosts = savedPosts.map((post) => {
 };
 const getPostsByCategory = async (req, res) => {
   const category = req.query.category;
-  console.log(category);
+  // console.log(category);
 
   if (category === "For You") {
     return getAllPosts(req, res);
@@ -208,7 +208,7 @@ const getPostsByCategory = async (req, res) => {
 };
 const getPostByQuery = async (req, res) => {
   const { query } = req.query;
-  console.log(query);
+  // console.log(query);
   if (!query || query.trim().length < 3) {
     return res.status(404).json({ message: "No results found" });
   }

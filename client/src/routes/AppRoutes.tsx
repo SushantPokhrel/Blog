@@ -16,6 +16,7 @@ import CreatePost from "../pages/CreatePost";
 import AuthForm from "../components/AuthForm";
 import ProtectedRoute from "../routes/Protected";
 import PublicRoute from "../routes/Public";
+import Notifications from "../pages/Notifications";
 const AppRoutes = () => {
   const location = useLocation();
 
@@ -62,7 +63,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-    
+
         <Route
           path="/dashboard"
           element={
@@ -74,6 +75,7 @@ const AppRoutes = () => {
           <Route index element={<Profile />} />
           <Route path="myblogs" element={<MyBlogs />} />
           <Route path="savedposts" element={<SavedPosts />} />
+          <Route path="notifications" element={<Notifications />} />
           <Route
             path="allusers"
             element={
