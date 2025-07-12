@@ -54,6 +54,17 @@
   .scale-in {
     animation: scaleIn 0.4s ease-in-out;
   }
+  @keyframes animateBg{
+0%{
+  background-color: #153ed3;
+}
+100%{
+  background-color: #0a268d
+}
+  }
+  .animate-bg{
+animation: animateBg 1s ease infinite;
+  }
   /* ckeditor css  */
   .ck-content h1,
   .post-display h1 {

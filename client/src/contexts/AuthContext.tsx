@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { formatDistanceToNow } from "date-fns";
 import { socket } from "../Socket";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -11,12 +12,16 @@ type UserTypes = {
   userId: string;
 };
 
-type likes = string[];
+// type likes = string[];
 type NotificationsTypes = {
-  likedByName: string;
+  likerName: string;
   postTitle: string;
-  likes: likes;
+  likes: number;
   postOwnerName: string;
+  likerProfile: string;
+  createdAt: string;
+  displayTime: string;
+  isRead:boolean
 };
 
 type AuthContextTypes = {
@@ -111,6 +116,28 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     }, 5 * 60 * 1000);
     return () => clearInterval(intervalId);
   }, []);
+  const getNotifications = async () => {
+    const response = await fetch(`${backendUrl}/api/notifications/all`, {
+      credentials: "include",
+    });
+    const data = await response.json();
+    // console.log(data);
+
+    setNotifications(
+      data.map((notification: NotificationsTypes) => {
+        const { createdAt } = notification;
+        const d = new Date(createdAt);
+        const result = formatDistanceToNow(d, {
+          addSuffix: true,
+        });
+        return {
+          ...notification,
+          displayTime: result,
+        };
+      })
+    );
+  };
+  // for socket and notifications
   useEffect(() => {
     if (isAuthenticated && user.userId) {
       socket.auth = { userID: user.userId };
@@ -118,7 +145,28 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       socket.connect();
       const onConnect = () => {
         console.log("socket connected");
-        socket.on("notifyOwner", (_) => {
+        getNotifications();
+        socket.on("notifyOwner", (data: NotificationsTypes) => {
+          setNotifications((prev) => {
+            const { createdAt } = data;
+            // console.log(data)
+            // console.log(createdAt);
+            // console.log(
+            //   new Date(createdAt).getTime() - new Date(createdAt).getTime()
+            // );
+
+            const d = new Date(createdAt);
+            const result = formatDistanceToNow(d, {
+              addSuffix: true,
+            });
+            const newValue = [...prev, { ...data, displayTime: result }];
+            newValue.sort(
+              (v1, v2) =>
+                new Date(v2.createdAt).getTime() -
+                new Date(v1.createdAt).getTime()
+            );
+            return newValue;
+          });
           // console.log(data);
         });
       };
@@ -129,6 +177,7 @@ const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       socket.off("connect");
     };
   }, [isAuthenticated, user.userId]);
+
   return (
     <AuthContext.Provider
       value={{

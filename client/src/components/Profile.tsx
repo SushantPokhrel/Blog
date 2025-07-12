@@ -3,6 +3,7 @@ import Loader from "./Loader";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../contexts/AuthContext";
+import { socket } from "../Socket";
 
 const MAX_FILE_SIZE_MB = 1; // 1MB limit
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -33,9 +34,10 @@ const Profile: React.FC = () => {
           username: "",
           profilePhoto: "",
           role: "",
-          userId:""
+          userId: "",
         });
         alert("User logged out successfully");
+        socket.disconnect();
         navigate("/user/auth");
       } else {
         alert("Failed logging out, try again");

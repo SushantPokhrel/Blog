@@ -7,15 +7,15 @@ const postSchema = new mongoose.Schema({
     required: true,
   },
   authorName: {
-    type:   String,
+    type: String,
     required: true,
   },
 
-  
   title: {
     type: String,
     required: true,
     trim: true,
+    unique: true,
   },
   subTitle: {
     type: String,
@@ -25,7 +25,7 @@ const postSchema = new mongoose.Schema({
   content: {
     type: String,
     required: true,
-    trim:true
+    trim: true,
   },
   banner: {
     type: String,
@@ -35,7 +35,6 @@ const postSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
-      
     },
   ],
   comments: [

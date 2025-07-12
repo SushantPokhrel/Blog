@@ -6,14 +6,25 @@ import { IoMdClose } from "react-icons/io"; // Close icon
 import { MdOutlineMenuOpen } from "react-icons/md";
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuthContext();
-  const linksUser = ["Profile", "MyBlogs", "CreateNew", "SavedPosts","Notifications"];
+  const { user, notifications } = useAuthContext();
+  const linksUser = [
+    "Profile",
+    "MyBlogs",
+    "CreateNew",
+    "SavedPosts",
+    "Notifications",
+  ];
   const linksAdmin = [...linksUser, "AllUsers", "AllPosts", "Analytics"];
   const [isOpen, setIsOpen] = useState(false);
   // Function to render NavLinks based on item
   const renderNavLink = (item: string) => {
-    const baseClasses =
-      "flex items-center gap-3 p-2.5 rounded-md hover:bg-blue-900 transition-colors text-sm";
+    const baseClasses = `flex items-center gap-3 p-2.5 rounded-md hover:bg-blue-900 transition-colors text-sm ${
+      item === "Notifications"
+        ? notifications.some((n) => n.isRead == false)
+          ? "animate-bg"
+          : ""
+        : null
+    }`;
     let to: string;
 
     if (item === "CreateNew") {

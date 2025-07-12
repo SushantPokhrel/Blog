@@ -74,10 +74,11 @@ const Nav: React.FC = () => {
         )}
         {isAuthenticated && (
           <div
-            className="hamburger-menu p-2 cursor-pointer rounded-sm active:bg-blue-200 text-gray-500 md:hidden"
+            className="hamburger-menu p-2  relative cursor-pointer rounded-sm active:bg-blue-200 text-gray-500 md:hidden"
             onClick={handleToggleMenu}
           >
             <HiMiniBars3 className="size-5" />
+            {notifications.some((n) => n.isRead === false) ? <ToolTip /> : null}
           </div>
         )}
         {isAuthenticated && (
@@ -87,7 +88,7 @@ const Nav: React.FC = () => {
             className="hidden  relative md:inline-block p-1.5 rounded-sm active:bg-blue-200 text-gray-500 hover:text-gray-700"
           >
             <IoPersonOutline className="size-4 " />
-            {notifications.length ? <ToolTip />:null }
+            {notifications.some((n) => n.isRead === false) ? <ToolTip /> : null}
           </Link>
         )}
       </div>
@@ -138,7 +139,7 @@ const Nav: React.FC = () => {
               className="p-1.5 relative rounded-sm active:bg-blue-200 text-gray-500"
             >
               <IoPersonOutline className="size-5 " />
-            {notifications.length ? <ToolTip />:null }
+            {notifications.some((n) => n.isRead === false) ? <ToolTip /> : null}
             </Link>
           </div>
         ) : (

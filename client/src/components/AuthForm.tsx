@@ -26,6 +26,7 @@ const AuthForm: React.FC = () => {
   const googleLogin = useGoogleLogin({
     onSuccess: async (credentialResponse) => {
       setProcessingGoogle(true);
+      console.log(credentialResponse.code)
       try {
         const response = await fetch(`${backendUrl}/api/auth/google`, {
           method: "POST",

@@ -152,7 +152,8 @@ function UserPost() {
           postOwnerName: post.authorName,
           postTitle: post.title,
           likes: data.likes,
-          postOwnerID:post.author
+          postOwnerID: post.author,
+          likerProfile: user.profilePhoto,
         });
       }
     } catch (error) {
